@@ -1,0 +1,9 @@
+# ignore target artifact folders
+target/
+
+# ignore IDE artifacts
+.settings
+.classpath
+.project
+
+/geoplatform-oauth2-core/dependency-reduced-pom.xml
