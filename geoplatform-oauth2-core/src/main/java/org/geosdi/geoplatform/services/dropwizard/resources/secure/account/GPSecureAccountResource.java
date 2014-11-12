@@ -39,7 +39,6 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -69,7 +68,7 @@ import org.springframework.stereotype.Component;
  */
 @Path(value = GPServiceRSPathConfig.DEFAULT_RS_SERVICE_PATH)
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+//@Consumes(MediaType.APPLICATION_JSON)
 @Component(value = "secureAccountResource")
 public class GPSecureAccountResource extends BaseAccountResource {
 

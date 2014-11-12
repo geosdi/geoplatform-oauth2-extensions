@@ -45,6 +45,7 @@ import org.geosdi.geoplatform.request.SearchRequest;
 import org.geosdi.geoplatform.responce.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.responce.UserDTO;
 import org.geosdi.geoplatform.responce.authority.GetAuthorityResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -53,39 +54,41 @@ import org.geosdi.geoplatform.responce.authority.GetAuthorityResponse;
  */
 abstract class BaseAccountResource implements SecureAccountResouce {
 
+    @Autowired
     protected AccountDelegate gpAccountDelegate;
 
     @Override
     public Long insertAccount(InsertAccountRequest insertAccountRequest) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.insertAccount(insertAccountRequest);
     }
 
     @Override
     public Long updateUser(GPUser user) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.updateUser(user);
     }
 
     @Override
     public Boolean deleteAccount(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.deleteAccount(accountID);
     }
 
     @Override
     public GPUser getUserDetail(Long userID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getUserDetail(userID);
     }
 
     @Override
     public GPUser getUserDetailByUsername(SearchRequest request) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getUserDetailByUsername(request);
     }
 
     @Override
     public GPUser getUserDetailByUsernameAndPassword(String username,
             String plainPassword) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getUserDetailByUsernameAndPassword(
+                username, plainPassword);
     }
 
     @Override
@@ -97,13 +100,13 @@ abstract class BaseAccountResource implements SecureAccountResouce {
     @Override
     public UserDTO getShortUserByUsername(SearchRequest request)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getShortUserByUsername(request);
     }
 
     @Override
     public List<UserDTO> searchUsers(Long userID, PaginatedSearchRequest request)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.searchUsers(userID, request);
     }
 
     @Override
@@ -114,45 +117,37 @@ abstract class BaseAccountResource implements SecureAccountResouce {
     @Override
     public ShortAccountDTOContainer getAccounts(String organization) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getAccounts(organization);
     }
 
     @Override
     public Long getAccountsCount(SearchRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getAccountsCount(request);
     }
 
     @Override
     public Long getUsersCount(String organization, SearchRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getUsersCount(organization, request);
     }
 
     @Override
     public GetAuthorityResponse getAuthorities(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getAuthorities(accountID);
     }
 
     @Override
     public List<GPAuthority> getAuthoritiesDetail(String accountNaturalID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.gpAccountDelegate.getAuthoritiesDetail(accountNaturalID);
     }
 
     @Override
     public void forceTemporaryAccount(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.gpAccountDelegate.forceTemporaryAccount(accountID);
     }
 
     @Override
     public void forceExpiredTemporaryAccount(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.gpAccountDelegate.forceExpiredTemporaryAccount(accountID);
     }
-
-    /**
-     * @param theGpAccountDelegate the gpAccountDelegate to set
-     */
-    public void setGpAccountDelegate(AccountDelegate theGpAccountDelegate) {
-        this.gpAccountDelegate = theGpAccountDelegate;
-    }
-
 }
