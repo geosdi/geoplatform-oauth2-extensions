@@ -1,7 +1,35 @@
 server:
+  type: default
+  maxThreads: 1024
+  minThreads: 8
+  maxQueuedRequests: 1024
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8082
+      headerCacheSize: 512 bytes
+      outputBufferSize: 32KiB
+      maxRequestHeaderSize: 8KiB
+      maxResponseHeaderSize: 8KiB
+      inputBufferSize: 8KiB
+      idleTimeout: 30 seconds
+      minBufferPoolSize: 64 bytes
+      bufferPoolIncrement: 1KiB
+      maxBufferPoolSize: 64KiB
+      acceptorThreads: 1
+      selectorThreads: 2
+      acceptQueueSize: 1024
+      reuseAddress: true
+      soLingerTime: 345s
+      useServerHeader: false
+      useDateHeader: true
+      useForwardedHeaders: true
+
+server:
  applicationConnectors: 
  -  type: http
-    port: 8082
+    port: 8082    
  adminConnectors:
  -  type: http
     port: 8081
