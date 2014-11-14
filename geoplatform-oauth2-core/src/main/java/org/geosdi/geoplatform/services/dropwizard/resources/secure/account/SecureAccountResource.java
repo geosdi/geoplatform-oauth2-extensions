@@ -52,7 +52,7 @@ import org.geosdi.geoplatform.services.core.api.resources.GPAccountResource;
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public interface SecureAccountResouce extends GPAccountResource {
+public interface SecureAccountResource extends GPAccountResource {
 
     Long insertAccount(Principal principal,
             InsertAccountRequest insertAccountRequest) throws Exception;

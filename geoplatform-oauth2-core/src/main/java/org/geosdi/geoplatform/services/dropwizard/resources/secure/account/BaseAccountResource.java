@@ -52,7 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-abstract class BaseAccountResource implements SecureAccountResouce {
+abstract class BaseAccountResource implements SecureAccountResource {
 
     @Autowired
     protected AccountDelegate gpAccountDelegate;

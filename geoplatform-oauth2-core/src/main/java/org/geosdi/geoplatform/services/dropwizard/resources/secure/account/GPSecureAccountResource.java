@@ -66,9 +66,8 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@Path(value = GPServiceRSPathConfig.DEFAULT_RS_SERVICE_PATH)
+@Path(value = GPServiceRSPathConfig.GP_SECURE_ACCOUNTS_PATH)
 @Produces(MediaType.APPLICATION_JSON)
-//@Consumes(MediaType.APPLICATION_JSON)
 @Component(value = "secureAccountResource")
 public class GPSecureAccountResource extends BaseAccountResource {
 
