@@ -15,6 +15,10 @@
 
     <name>Geo-Platform :: == OAuth2 Services Module</name>
     
+    <properties>
+        <jersey-version>1.18.1</jersey-version>
+    </properties>
+    
     <repositories>
         <!-- geoSDI -->
         <repository>
@@ -37,6 +41,7 @@
     </dependencyManagement>
         
     <modules>
+        <module>geoplatform-oauth2-api</module>
         <module>geoplatform-oauth2-core</module>
     </modules>
     

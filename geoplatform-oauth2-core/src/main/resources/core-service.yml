@@ -34,10 +34,10 @@ server:
  -  type: http
     port: 8081
 
-coreAuth:
-  authorizationServerUrl: http://localhost:8080/v1/tokeninfo
-  secret: af1cf471-0772-4f51-ba30-6900b0b56840
-  key: faad82dd-50d7-4380-872f-af1a1584e2ae
+auth:
+  authorizationServerUrl: http://localhost:8282/gp-authorization-service/v1/tokeninfo
+  secret: 13f1d54d-3405-426a-9868-10f6aa7ce410
+  key: 9f3323c3-f98e-4463-b054-2bee0669d97a
 
 # Logging settings.
 logging:
