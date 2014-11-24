@@ -162,4 +162,11 @@ public class VerifyTokenResponse implements Serializable {
     public void setPrincipal(GPAuthenticatedPrincipal principal) {
         this.principal = principal;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + " {" + "audience = " + audience
+                + ", scopes = " + scopes + ", principal = " + principal
+                + ", expiresIn = " + expiresIn + ", error = " + error + '}';
+    }
 }
