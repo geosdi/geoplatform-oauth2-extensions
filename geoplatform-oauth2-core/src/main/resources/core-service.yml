@@ -36,8 +36,8 @@ server:
 
 auth:
   authorizationServerUrl: http://localhost:8282/gp-authorization-service/v1/tokeninfo
-  secret: 13f1d54d-3405-426a-9868-10f6aa7ce410
-  key: 9f3323c3-f98e-4463-b054-2bee0669d97a
+  secret: c20d6fdd-2945-4365-9285-8529ac27121c
+  key: 6444ff48-999c-474a-96a5-2d5fc4bebcea
 
 # Logging settings.
 logging:

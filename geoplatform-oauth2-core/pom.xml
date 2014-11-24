@@ -59,11 +59,6 @@
             <artifactId>dropwizard-jackson</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        
         <!-- =========================================================== -->
         <!-- ========================= SPRING ========================== -->
         <!-- =========================================================== -->
