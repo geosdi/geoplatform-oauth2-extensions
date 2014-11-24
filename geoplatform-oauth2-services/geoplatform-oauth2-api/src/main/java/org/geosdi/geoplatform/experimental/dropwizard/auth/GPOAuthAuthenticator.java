@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 public class GPOAuthAuthenticator implements
         Authenticator<String, GPAuthenticatedPrincipal> {
 
-    private static final Logger logger = LoggerFactory.getLogger(
+    static final Logger logger = LoggerFactory.getLogger(
             GPOAuthAuthenticator.class);
     //
     private static final String ACCESS_TOKEN_KEY = "?access_token=%s";
