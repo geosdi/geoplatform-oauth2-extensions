@@ -33,31 +33,64 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
+package org.geosdi.geoplatform.experimental.connector.core.spring.settings;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+import com.google.common.base.Preconditions;
+import net.jcip.annotations.Immutable;
+import org.geosdi.geoplatform.experimental.connector.api.settings.OAuth2ClientSettings;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+@Immutable
+@Component(value = "oauth2CoreSettings")
+public class OAuth2CoreSettings implements OAuth2ClientSettings {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
-    }
+    @Value(value = "oauth2CoreConfigurator{core.client.id:@null}")
+    private String clientId;
+    @Value(value = "oauth2CoreConfigurator{core.client.secret:@null}")
+    private String clientSecret;
+    @Value(value = "oauth2CoreConfigurator{core.access.token.url:@null}")
+    private String accessTokenURL;
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
+    @Override
+    public String getClientId() {
+        return this.clientId;
     }
 
     @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
+    public String getClientSecret() {
+        return this.clientSecret;
+    }
+
+    @Override
+    public String getAccessTokenURL() {
+        return this.accessTokenURL;
+    }
+
+    @Override
+    public String getConnectorName() {
+        return "GeoPlatform OAuth2 Core Client Settings";
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Preconditions.checkNotNull(clientId, "The Client Id Parameter must not "
+                + "be null.");
+        Preconditions.checkNotNull(clientSecret, "The Client Secret Parameter "
+                + "must not be null.");
+        Preconditions.checkNotNull(accessTokenURL, "The Access Token URL must "
+                + "not be null.");
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" + "clientId = " + clientId 
+                + ", clientSecret = " + clientSecret 
+                + ", accessTokenURL = " + accessTokenURL + '}';
     }
 }

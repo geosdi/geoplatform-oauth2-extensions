@@ -4,16 +4,16 @@
     
     <parent>
         <groupId>org.geosdi</groupId>
-        <artifactId>geoplatform-oauth2-services</artifactId>
+        <artifactId>geoplatform-oauth2-connectors</artifactId>
         <version>1.7-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geosdi</groupId>
-    <artifactId>geoplatform-oauth2-api</artifactId>
+    <artifactId>geoplatform-oauth2-core-connector</artifactId>
     <version>1.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Geo-Platform :: == OAuth2 Api Module</name>
+    <name>Geo-Platform :: == OAuth2 Core Connector Module</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -21,23 +21,51 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.geosdi</groupId>
+            <artifactId>geoplatform-services-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- =========================================================== -->
-        <!-- ========================= SPRING ========================== -->
+        <!-- ==================== OAUTH2 CONNECTOR API ================= -->
         <!-- =========================================================== -->
+        <dependency>
+            <groupId>org.geosdi</groupId>
+            <artifactId>geoplatform-oauth2-connector-api</artifactId>
+        </dependency>
+        
+        <!-- =========================================================== -->
+        <!-- =========================== SPRING ======================== -->
+        <!-- =========================================================== -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
         </dependency>
-        
+
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-auth</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
         </dependency>
         
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${jersey-version}</version>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <dependency>
+              <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         
         <dependency> 
@@ -46,33 +74,10 @@
             <version>${project.version}</version>
         </dependency>
         
-         <!-- JAX-RS provider -->
+        <!-- JAX-RS provider -->
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        
-        <!-- logging dependencies, delegate all to slf4j and use logback -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
         </dependency>
         
         <dependency>

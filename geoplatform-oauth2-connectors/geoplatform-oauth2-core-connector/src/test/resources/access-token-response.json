@@ -1,0 +1,7 @@
+{
+    "scope": "read,write",
+    "access_token": "fa31d279-599d-4720-94b4-305fff5024df",
+    "token_type": "bearer",
+    "expires_in": 60,
+    "refresh_token": "9f29ce35-43d0-4805-b4ca-a9c003f62d2f"
+}

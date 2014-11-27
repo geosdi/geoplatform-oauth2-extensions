@@ -4,16 +4,16 @@
     
     <parent>
         <groupId>org.geosdi</groupId>
-        <artifactId>geoplatform-oauth2-services</artifactId>
+        <artifactId>geoplatform-oauth2-connectors</artifactId>
         <version>1.7-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geosdi</groupId>
-    <artifactId>geoplatform-oauth2-api</artifactId>
+    <artifactId>geoplatform-oauth2-connector-api</artifactId>
     <version>1.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Geo-Platform :: == OAuth2 Api Module</name>
+    <name>Geo-Platform :: == OAuth2 Connector Api Module</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -22,39 +22,50 @@
 
     <dependencies>
         <!-- =========================================================== -->
+        <!-- ======================== GUAVA ============================ -->
+        <!-- =========================================================== -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        
+        <!-- =========================================================== -->
         <!-- ========================= SPRING ========================== -->
         <!-- =========================================================== -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
+            <artifactId>spring-beans</artifactId>
         </dependency>
         
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-auth</artifactId>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey-version}</version>
         </dependency>
-        
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${jersey-version}</version>
         </dependency>
         
-        <dependency> 
-            <groupId>org.geosdi</groupId> 
-            <artifactId>geoplatform-jackson-support</artifactId> 
-            <version>${project.version}</version>
-        </dependency>
-        
-         <!-- JAX-RS provider -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-        </dependency>
-        
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
         
         <!-- logging dependencies, delegate all to slf4j and use logback -->
@@ -73,18 +84,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

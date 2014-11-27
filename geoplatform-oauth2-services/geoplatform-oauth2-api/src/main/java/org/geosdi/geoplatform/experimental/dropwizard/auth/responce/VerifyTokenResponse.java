@@ -35,11 +35,10 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.auth.responce;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticatedPrincipal;
 
 /**
@@ -47,10 +46,10 @@ import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticated
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@SuppressWarnings("serial")
 @XmlRootElement
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class VerifyTokenResponse implements Serializable {
+
+    private static final long serialVersionUID = -6187991441998103593L;
     /*
      * The application that is the intended target of the token.
      */
@@ -165,7 +164,7 @@ public class VerifyTokenResponse implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getName() + " {" + "audience = " + audience
+        return getClass().getSimpleName() + " {" + "audience = " + audience
                 + ", scopes = " + scopes + ", principal = " + principal
                 + ", expiresIn = " + expiresIn + ", error = " + error + '}';
     }

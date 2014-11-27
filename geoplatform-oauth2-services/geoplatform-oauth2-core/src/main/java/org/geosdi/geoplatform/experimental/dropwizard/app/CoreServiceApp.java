@@ -35,8 +35,10 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.Application;
 import io.dropwizard.auth.oauth.OAuthProvider;
+import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.Map;
@@ -45,6 +47,7 @@ import org.geosdi.geoplatform.experimental.dropwizard.config.CoreServiceConfig;
 import org.geosdi.geoplatform.experimental.dropwizard.config.spring.CoreOAuth2ServiceLoader;
 import org.geosdi.geoplatform.experimental.dropwizard.health.CoreServiceHealthCheck;
 import org.geosdi.geoplatform.experimental.dropwizard.oauth.CoreOAuthAuthenticator;
+import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -73,6 +76,9 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
         ctx.refresh();
         ctx.registerShutdownHook();
         ctx.start();
+
+        e.jersey().register(new JacksonMessageBodyProvider(
+                new GPJacksonSupport().getDefaultMapper(), e.getValidator()));
         e.jersey().register(new OAuthProvider<>(new CoreOAuthAuthenticator(t),
                 "protected-resources"));
         e.healthChecks().register("service-health-check",

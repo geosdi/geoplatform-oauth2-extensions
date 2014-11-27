@@ -33,17 +33,16 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.auth;
+package org.geosdi.geoplatform.experimental.dropwizard.auth.authorize;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 import com.sun.jersey.api.client.Client;
 import io.dropwizard.auth.AuthenticationException;
-import io.dropwizard.auth.Authenticator;
 import java.io.IOException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticatedPrincipal;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.responce.VerifyTokenResponse;
 import org.geosdi.geoplatform.experimental.dropwizard.config.AuthConfig;
@@ -56,11 +55,10 @@ import org.slf4j.LoggerFactory;
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class GPOAuthAuthenticator implements
-        Authenticator<String, GPAuthenticatedPrincipal> {
+public abstract class BaseOAuth2Authenticator implements GPOAuth2Authenticator {
 
     static final Logger logger = LoggerFactory.getLogger(
-            GPOAuthAuthenticator.class);
+            BaseOAuth2Authenticator.class);
     //
     private static final String ACCESS_TOKEN_KEY = "?access_token=%s";
     //
@@ -69,7 +67,7 @@ public class GPOAuthAuthenticator implements
     private final String authorizationValue;
     private final ObjectMapper mapper;
 
-    public GPOAuthAuthenticator(GPServiceConfig conf, Client theClient,
+    protected BaseOAuth2Authenticator(GPServiceConfig conf, Client theClient,
             ObjectMapper theMapper) {
         if (conf == null) {
             throw new IllegalArgumentException("The GPServiceConfig must not "

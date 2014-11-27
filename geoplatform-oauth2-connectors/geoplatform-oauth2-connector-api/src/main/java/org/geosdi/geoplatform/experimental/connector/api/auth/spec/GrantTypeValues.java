@@ -33,31 +33,35 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+package org.geosdi.geoplatform.experimental.connector.api.auth.spec;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+public enum GrantTypeValues implements OAuth2GrantType {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
-    }
+    AUTHORIZATION_CODE(GRANT_TYPE, "authorization_code"),
+    REFRESH_TOKEN(GRANT_TYPE, "refresh_token"),
+    CLIENT_CREDENTIALS(GRANT_TYPE, "client_credentials");
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
+    private final String key;
+    private final String value;
+
+    private GrantTypeValues(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
     @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
+    public String getGrantTypeKey() {
+        return this.key;
     }
+
+    @Override
+    public String getGrantTypeValue() {
+        return this.value;
+    }
+
 }

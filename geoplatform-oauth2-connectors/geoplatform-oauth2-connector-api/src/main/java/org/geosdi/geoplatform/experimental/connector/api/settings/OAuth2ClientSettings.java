@@ -33,31 +33,19 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+package org.geosdi.geoplatform.experimental.connector.api.settings;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+public interface OAuth2ClientSettings extends BaseConnectorSettings {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
-    }
+    String getClientId();
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
-    }
+    String getClientSecret();
+    
+    String getAccessTokenURL();
 
-    @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
-    }
 }

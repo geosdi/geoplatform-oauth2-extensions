@@ -33,31 +33,51 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
+package org.geosdi.geoplatform.experimental.connector.core.spring.settings;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+import com.google.common.base.Preconditions;
+import net.jcip.annotations.Immutable;
+import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+@Immutable
+@Component(value = "coreClientSettings")
+public class CoreClientSettings implements ConnectorClientSettings {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
-    }
+    @Value(value = "oauth2CoreConfigurator{core.rest.service.url:@null}")
+    private String restServiceURL;
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
+    @Override
+    public String getRestServiceURL() {
+        return this.restServiceURL;
     }
 
     @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
+    public String getConnectorName() {
+        return "GeoPlatform Core Client Settings";
     }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Preconditions.checkNotNull(restServiceURL, "The Rest Service URL must "
+                + "not be null.");
+
+        if (!this.restServiceURL.endsWith("/")) {
+            this.restServiceURL = this.restServiceURL.concat("/");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" 
+                + "connectorName = " + getConnectorName()
+                + ", restServiceURL = " + restServiceURL + '}';
+    }
+
 }

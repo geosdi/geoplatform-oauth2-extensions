@@ -33,31 +33,64 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
+package org.geosdi.geoplatform.experimental.connector.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+import javax.annotation.Resource;
+import org.geosdi.geoplatform.experimental.connector.core.spring.connector.OAuth2CoreClientConnector;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:applicationContext.xml"})
+public class OAuth2CoreConnectorTest {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
+    private static final Logger logger = LoggerFactory.getLogger(
+            OAuth2CoreConnectorTest.class);
+    static final String CORE_CONNECTOR_KEY = "OAUTH2_CORE_FILE_PROP";
+    //
+    @Resource(name = "oauth2CoreClientConnector")
+    private OAuth2CoreClientConnector oauth2CoreClientConnector;
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(CORE_CONNECTOR_KEY, "oauth2-core-test.prop");
     }
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
+    @Before
+    public void setUp() {
+        Assert.assertNotNull(oauth2CoreClientConnector);
     }
 
-    @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
+    @Test
+    public void coreSettingsTest() {
+        logger.info("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@OAUTH2 Settings : {}\n\n",
+                this.oauth2CoreClientConnector.getClientSettings());
     }
+
+    @Ignore(value = "OAUTH Server must be up")
+    @Test
+    public void oauth2GetAllAccountsTest() throws InterruptedException {
+        logger.info("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@RETRIEVE ALL ACCOUNTS : {}",
+                this.oauth2CoreClientConnector.getAllAccounts());
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(CORE_CONNECTOR_KEY);
+    }
+
 }

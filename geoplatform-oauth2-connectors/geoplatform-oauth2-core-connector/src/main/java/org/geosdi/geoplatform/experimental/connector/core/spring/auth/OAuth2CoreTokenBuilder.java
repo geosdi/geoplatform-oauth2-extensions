@@ -33,40 +33,34 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.auth.provider;
+package org.geosdi.geoplatform.experimental.connector.core.spring.auth;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.mrbean.MrBeanModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import javax.ws.rs.core.MultivaluedMap;
+import static org.geosdi.geoplatform.experimental.connector.api.auth.spec.GrantTypeValues.CLIENT_CREDENTIALS;
+import org.geosdi.geoplatform.experimental.connector.api.auth.token.BaseTokenBuilder;
+import org.geosdi.geoplatform.experimental.connector.api.settings.OAuth2ClientSettings;
 
 /**
- * <p>TODO: Refactoring with jackson 2.4.3</p>
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@Provider
-public class GPObjectMapperProvider implements ContextResolver<ObjectMapper> {
+class OAuth2CoreTokenBuilder extends BaseTokenBuilder {
 
-    private final ObjectMapper mapper;
-
-    public GPObjectMapperProvider() {
-        mapper = new ObjectMapper().enable(
-                DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY).enableDefaultTyping(
-                        ObjectMapper.DefaultTyping.NON_FINAL)
-                .setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL).setVisibility(
-                        JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
-        mapper.registerModule(new MrBeanModule());
+    public OAuth2CoreTokenBuilder(OAuth2ClientSettings theClientSettings,
+            Client theClient, ObjectMapper theMapper) {
+        super(theClientSettings, theClient, theMapper);
     }
 
     @Override
-    public ObjectMapper getContext(Class<?> type) {
-        return this.mapper;
+    protected final MultivaluedMap<String, String> createFormData() {
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(CLIENT_CREDENTIALS.getGrantTypeKey(),
+                CLIENT_CREDENTIALS.getGrantTypeValue());
+        return formData;
     }
 
 }

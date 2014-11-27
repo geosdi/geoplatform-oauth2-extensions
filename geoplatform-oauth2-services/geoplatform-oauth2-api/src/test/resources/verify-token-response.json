@@ -1,0 +1,15 @@
+{
+    "audience": "gp_cool_client",
+    "scopes": ["read", "write"],
+    "principal": {
+        "name": "gp_cool_client",
+        "roles": [],
+        "groups": [],
+        "adminPrincipal": false,
+        "attributes": {
+            "DISPLAY_NAME": "gp_cool_client",
+            "IDENTITY_PROVIDER": "http://mock-idp"
+        }
+    },
+    "expires_in": 0
+}

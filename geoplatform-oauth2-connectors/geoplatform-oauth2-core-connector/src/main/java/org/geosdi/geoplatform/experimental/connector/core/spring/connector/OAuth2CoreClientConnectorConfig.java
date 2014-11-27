@@ -33,31 +33,36 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
+package org.geosdi.geoplatform.experimental.connector.core.spring.connector;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import org.geosdi.geoplatform.experimental.connector.api.auth.token.OAuth2TokenBuilder;
+import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
+import org.geosdi.geoplatform.experimental.connector.core.spring.connector.provider.CoreJacksonProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+@Configuration
+class OAuth2CoreClientConnectorConfig {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
+    @Bean(name = "oauth2CoreClientConnector")
+    public OAuth2CoreClientConnector createCoreClientConnector(@Qualifier(
+            value = "oauth2CoreTokenBuilder") OAuth2TokenBuilder oauth2CoreTokenBuilder,
+            @Qualifier(value = "coreClientSettings") ConnectorClientSettings coreClientSettings) {
+
+        return new OAuth2CoreClientConnector(coreClientSettings, createClient(),
+                oauth2CoreTokenBuilder);
     }
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
+    Client createClient() {
+        return Client.create(new DefaultClientConfig(CoreJacksonProvider.class));
     }
 
-    @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
-    }
 }

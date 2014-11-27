@@ -33,31 +33,35 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.oauth;
+package org.geosdi.geoplatform.experimental.connector.core.spring.placeholder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
-import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
-import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
+import java.net.MalformedURLException;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
+class Oauth2CoreResourcesLoader {
 
-    public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
+    protected Resource[] loadResources(String gpConfigDataDir,
+            String gpCoreFileProp) throws MalformedURLException {
+
+        String fileToSearch = ((gpCoreFileProp != null)
+                && (!gpCoreFileProp.isEmpty())) ? ((gpCoreFileProp.contains("."))
+                        && (gpCoreFileProp.endsWith(".properties"))) ? gpCoreFileProp
+                                : (gpCoreFileProp.contains(".")) ? gpCoreFileProp.substring(
+                                                0, gpCoreFileProp.indexOf(".")) + ".properties"
+                                        : gpCoreFileProp + ".properties" : "oauth-core.properties";
+
+        Resource[] resources = new Resource[]{new ClassPathResource(fileToSearch),
+            new UrlResource("file:" + gpConfigDataDir
+            + "/" + fileToSearch)};
+
+        return resources;
     }
 
-    private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
-    }
-
-    @Override
-    public String getAuthenticatorName() {
-        return "Core OAuth2 Authenticator";
-    }
 }
