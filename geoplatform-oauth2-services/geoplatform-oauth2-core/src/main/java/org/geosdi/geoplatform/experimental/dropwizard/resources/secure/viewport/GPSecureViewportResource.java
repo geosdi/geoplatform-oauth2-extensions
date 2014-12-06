@@ -49,7 +49,7 @@ import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.core.model.GPViewport;
 import org.geosdi.geoplatform.request.viewport.InsertViewportRequest;
 import org.geosdi.geoplatform.request.viewport.ManageViewportRequest;
-import org.geosdi.geoplatform.responce.viewport.WSGetViewportResponse;
+import org.geosdi.geoplatform.response.viewport.WSGetViewportResponse;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

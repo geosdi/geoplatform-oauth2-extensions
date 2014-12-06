@@ -33,45 +33,48 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.message;
+package org.geosdi.geoplatform.experimental.connector.core;
 
-import java.security.Principal;
-import java.util.List;
-import org.geosdi.geoplatform.core.model.GPMessage;
-import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
-import org.geosdi.geoplatform.response.MessageDTO;
-import org.geosdi.geoplatform.services.core.api.resources.GPMessageResource;
+import org.geosdi.geoplatform.core.model.GPOrganization;
+import org.geosdi.geoplatform.core.model.GPUser;
+import org.geosdi.geoplatform.gui.shared.GPRole;
+import org.geosdi.geoplatform.request.LikePatternType;
+import org.geosdi.geoplatform.request.SearchRequest;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public interface SecureMessageResource extends GPMessageResource {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:applicationContext.xml"})
+abstract class OAuth2CoreServiceTest extends OAuth2ServiceTest {
 
-    Long insertMessage(Principal principal, GPMessage message) throws Exception;
+    protected static final String organizationNameRSTest = "geoSDI_OAuth2_test";
+    // Users
+    protected static final String usernameTest = "user_test_oauth2";
+    protected static final String passwordTest = usernameTest;
+    protected static final String emailTest = usernameTest + "@" + domainNameTest;
+    protected GPUser userTest;
 
-    Boolean insertMultiMessage(Principal principal, MessageDTO messageDTO)
-            throws Exception;
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        // Insert User
+        idUserTest = this.createAndInsertUser(usernameTest, organizationTest,
+                GPRole.USER);
+        userTest = oauth2CoreClientConnector.getUserDetailByUsername(
+                new SearchRequest(usernameTest, LikePatternType.CONTENT_EQUALS));
+    }
 
-    Boolean deleteMessage(Principal principal, Long messageID) throws Exception;
+    @Override
+    protected void setUpOrganization() throws Exception {
+        organizationTest = new GPOrganization(organizationNameRSTest);
+        organizationTest.setId(oauth2CoreClientConnector.insertOrganization(
+                organizationTest));
+    }
 
-    GPMessage getMessageDetail(Principal principal, Long messageID)
-            throws Exception;
-
-    List<GPMessage> getAllMessagesByRecipient(Principal principal,
-            Long recipientID) throws Exception;
-
-    List<GPMessage> getUnreadMessagesByRecipient(Principal principal,
-            Long recipientID) throws Exception;
-
-    Boolean markMessageAsRead(Principal principal, Long messageID)
-            throws Exception;
-
-    Boolean markAllMessagesAsReadByRecipient(Principal principal,
-            Long recipientID) throws Exception;
-
-    Boolean markMessagesAsReadByDate(Principal principal,
-            MarkMessageReadByDateRequest markMessageAsReadByDateReq)
-            throws Exception;
 }

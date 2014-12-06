@@ -33,45 +33,55 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.message;
+package org.geosdi.geoplatform.experimental.connector.basic;
 
-import java.security.Principal;
-import java.util.List;
-import org.geosdi.geoplatform.core.model.GPMessage;
-import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
-import org.geosdi.geoplatform.response.MessageDTO;
-import org.geosdi.geoplatform.services.core.api.resources.GPMessageResource;
+import javax.annotation.Resource;
+import org.geosdi.geoplatform.experimental.connector.core.spring.connector.OAuth2CoreClientConnector;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public interface SecureMessageResource extends GPMessageResource {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:applicationContext.xml"})
+public class OAuth2BasicConnectorTest {
 
-    Long insertMessage(Principal principal, GPMessage message) throws Exception;
+    private static final Logger logger = LoggerFactory.getLogger(OAuth2BasicConnectorTest.class);
+    static final String CORE_CONNECTOR_KEY = "OAUTH2_CORE_FILE_PROP";
+    //
+    @Resource(name = "oauth2CoreClientConnector")
+    private OAuth2CoreClientConnector oauth2CoreClientConnector;
 
-    Boolean insertMultiMessage(Principal principal, MessageDTO messageDTO)
-            throws Exception;
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(CORE_CONNECTOR_KEY, "oauth2-core-test.prop");
+    }
 
-    Boolean deleteMessage(Principal principal, Long messageID) throws Exception;
+    @Before
+    public void setUp() {
+        Assert.assertNotNull(oauth2CoreClientConnector);
+    }
 
-    GPMessage getMessageDetail(Principal principal, Long messageID)
-            throws Exception;
+    @Test
+    public void coreSettingsTest() {
+        logger.info("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@OAUTH2 Settings : {}\n\n",
+                this.oauth2CoreClientConnector.getClientSettings());
+    }
 
-    List<GPMessage> getAllMessagesByRecipient(Principal principal,
-            Long recipientID) throws Exception;
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(CORE_CONNECTOR_KEY);
+    }
 
-    List<GPMessage> getUnreadMessagesByRecipient(Principal principal,
-            Long recipientID) throws Exception;
-
-    Boolean markMessageAsRead(Principal principal, Long messageID)
-            throws Exception;
-
-    Boolean markAllMessagesAsReadByRecipient(Principal principal,
-            Long recipientID) throws Exception;
-
-    Boolean markMessagesAsReadByDate(Principal principal,
-            MarkMessageReadByDateRequest markMessageAsReadByDateReq)
-            throws Exception;
 }

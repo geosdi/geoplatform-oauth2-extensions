@@ -38,7 +38,6 @@ package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.account;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
-import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,14 +47,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.geosdi.geoplatform.core.model.GPAuthority;
 import org.geosdi.geoplatform.core.model.GPUser;
 import org.geosdi.geoplatform.request.InsertAccountRequest;
+import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.SearchRequest;
-import org.geosdi.geoplatform.responce.ShortAccountDTOContainer;
-import org.geosdi.geoplatform.responce.UserDTO;
-import org.geosdi.geoplatform.responce.authority.GetAuthorityResponse;
+import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
+import org.geosdi.geoplatform.response.UserDTO;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,11 +119,14 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @Path(value = GPServiceRSPathConfig.GET_USER_DETAIL_BY_USERNAME_PATH)
     @Override
     public GPUser getUserDetailByUsername(@Auth Principal principal,
-            @QueryParam("request") SearchRequest request) throws Exception {
+            @QueryParam("nameLike") String nameLike,
+            @QueryParam("likeType") LikePatternType likeType)
+            throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "
                 + "getUserDetailByUsername - Principal : {}\n\n",
                 principal.getName());
-        return super.getUserDetailByUsername(request);
+        return super.getUserDetailByUsername(new SearchRequest(nameLike,
+                likeType));
     }
 
     @GET
@@ -149,15 +153,23 @@ public class GPSecureAccountResource extends BaseAccountResource {
         return super.getShortUser(userID);
     }
 
-    @GET
-    @Path(value = GPServiceRSPathConfig.GET_SHORT_USER_BY_USERNAME_PATH)
     @Override
-    public UserDTO getShortUserByUsername(@Auth Principal principal,
-            @QueryParam("request") SearchRequest request) throws Exception {
+    public UserDTO getShortUserByUsername(Principal principal,
+            SearchRequest request) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "
                 + "getShortUserByUsername - Principal : {}\n\n",
                 principal.getName());
         return super.getShortUserByUsername(request);
+    }
+
+    @GET
+    @Path(value = GPServiceRSPathConfig.GET_SHORT_USER_BY_USERNAME_PATH)
+    @Override
+    public UserDTO getShortUserByUsername(@Auth Principal principal,
+            @QueryParam("nameLike") String nameLike,
+            @QueryParam("likeType") LikePatternType likeType) throws Exception {
+        return getShortUserByUsername(principal, new SearchRequest(nameLike,
+                likeType));
     }
 
     @GET
@@ -170,15 +182,24 @@ public class GPSecureAccountResource extends BaseAccountResource {
         return super.getAllAccounts();
     }
 
-    @GET
-    @Path(value = GPServiceRSPathConfig.SEARCH_USERS_PATH)
     @Override
-    public List<UserDTO> searchUsers(@Auth Principal principal,
-            @QueryParam(value = "userID") Long userID,
-            @QueryParam("request") PaginatedSearchRequest request) throws Exception {
+    public SearchUsersResponse searchUsers(Principal principal, Long userID,
+            PaginatedSearchRequest request) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure searchUsers "
                 + "- Principal : {}\n\n", principal.getName());
         return super.searchUsers(userID, request);
+    }
+
+    @GET
+    @Path(value = GPServiceRSPathConfig.SEARCH_USERS_PATH)
+    @Override
+    public SearchUsersResponse searchUsers(@Auth Principal principal,
+            @QueryParam(value = "userID") Long userID,
+            @QueryParam(value = "num") Integer num,
+            @QueryParam(value = "page") Integer page,
+            @QueryParam(value = "nameLike") String nameLike) throws Exception {
+        return searchUsers(userID, new PaginatedSearchRequest(nameLike, num,
+                page));
     }
 
     @GET
@@ -192,14 +213,29 @@ public class GPSecureAccountResource extends BaseAccountResource {
         return super.getAccounts(organization);
     }
 
+    @Override
+    public Long getAccountsCount(@Auth Principal principal,
+            SearchRequest request) {
+        logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure getAccountsCount "
+                + "- Principal : {}\n\n", principal.getName());
+        return super.getAccountsCount(request);
+    }
+
     @GET
     @Path(value = GPServiceRSPathConfig.GET_ACCOUNTS_COUNT_PATH)
     @Override
     public Long getAccountsCount(@Auth Principal principal,
-            @QueryParam("request") SearchRequest request) {
-        logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure getAccountsCount "
+            @QueryParam(value = "nameLike") String nameLike,
+            @QueryParam(value = "likeType") LikePatternType likeType) {
+        return getAccountsCount(new SearchRequest(nameLike));
+    }
+
+    @Override
+    public Long getUsersCount(Principal principal, String organization,
+            SearchRequest request) {
+        logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure getUsersCount "
                 + "- Principal : {}\n\n", principal.getName());
-        return super.getAccountsCount(request);
+        return super.getUsersCount(organization, request);
     }
 
     @GET
@@ -207,10 +243,8 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @Override
     public Long getUsersCount(@Auth Principal principal,
             @QueryParam(value = "organization") String organization,
-            @QueryParam("request") SearchRequest request) {
-        logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure getUsersCount "
-                + "- Principal : {}\n\n", principal.getName());
-        return super.getUsersCount(organization, request);
+            @QueryParam("nameLike") String nameLike) {
+        return this.getUsersCount(organization, new SearchRequest(nameLike));
     }
 
     @GET
@@ -226,7 +260,7 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_AUTHORITIES_BY_ACCOUNT_NATURAL_ID)
     @Override
-    public List<GPAuthority> getAuthoritiesDetail(@Auth Principal principal,
+    public GetAuthoritiesResponse getAuthoritiesDetail(@Auth Principal principal,
             @PathParam(value = "accountNaturalID") String accountNaturalID)
             throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "
@@ -244,7 +278,7 @@ public class GPSecureAccountResource extends BaseAccountResource {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "
                 + "forceTemporaryAccount - Principal : {}\n\n",
                 principal.getName());
-        super.forceExpiredTemporaryAccount(accountID);
+        super.forceTemporaryAccount(accountID);
     }
 
     @PUT

@@ -36,15 +36,16 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.account;
 
 import java.security.Principal;
-import java.util.List;
-import org.geosdi.geoplatform.core.model.GPAuthority;
 import org.geosdi.geoplatform.core.model.GPUser;
 import org.geosdi.geoplatform.request.InsertAccountRequest;
+import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.SearchRequest;
-import org.geosdi.geoplatform.responce.ShortAccountDTOContainer;
-import org.geosdi.geoplatform.responce.UserDTO;
-import org.geosdi.geoplatform.responce.authority.GetAuthorityResponse;
+import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
+import org.geosdi.geoplatform.response.UserDTO;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.services.core.api.resources.GPAccountResource;
 
 /**
@@ -66,7 +67,7 @@ public interface SecureAccountResource extends GPAccountResource {
             Exception;
 
     GPUser getUserDetailByUsername(Principal principal,
-            SearchRequest request) throws Exception;
+            String nameLike, LikePatternType likeType) throws Exception;
 
     GPUser getUserDetailByUsernameAndPassword(Principal principal,
             String username, String plainPassword) throws Exception;
@@ -75,24 +76,36 @@ public interface SecureAccountResource extends GPAccountResource {
 
     UserDTO getShortUserByUsername(Principal principal,
             SearchRequest request) throws Exception;
-    
+
+    UserDTO getShortUserByUsername(Principal principal, String nameLike,
+            LikePatternType likeType) throws Exception;
+
     ShortAccountDTOContainer getAllAccounts(Principal principal);
 
-    List<UserDTO> searchUsers(Principal principal, Long userID,
+    SearchUsersResponse searchUsers(Principal principal, Long userID,
             PaginatedSearchRequest request) throws Exception;
+
+    SearchUsersResponse searchUsers(Principal principal, Long userID,
+            Integer num, Integer page, String nameLike) throws Exception;
 
     ShortAccountDTOContainer getAccounts(Principal principal,
             String organization) throws Exception;
 
     Long getAccountsCount(Principal principal, SearchRequest request);
 
+    Long getAccountsCount(Principal principal, String nameLike,
+            LikePatternType likeType);
+
     Long getUsersCount(Principal principal, String organization,
             SearchRequest request);
+
+    Long getUsersCount(Principal principal, String organization,
+            String nameLike);
 
     GetAuthorityResponse getAuthorities(Principal principal,
             Long accountID) throws Exception;
 
-    List<GPAuthority> getAuthoritiesDetail(Principal principal,
+    GetAuthoritiesResponse getAuthoritiesDetail(Principal principal,
             String accountNaturalID) throws Exception;
 
     void forceTemporaryAccount(Principal principal, Long accountID)

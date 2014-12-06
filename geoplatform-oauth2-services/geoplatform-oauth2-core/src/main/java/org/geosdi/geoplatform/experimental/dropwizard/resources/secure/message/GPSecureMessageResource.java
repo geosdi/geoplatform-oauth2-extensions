@@ -48,7 +48,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.core.model.GPMessage;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
-import org.geosdi.geoplatform.responce.MessageDTO;
+import org.geosdi.geoplatform.response.MessageDTO;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

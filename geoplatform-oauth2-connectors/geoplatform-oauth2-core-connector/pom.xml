@@ -34,6 +34,12 @@
             <artifactId>geoplatform-oauth2-connector-api</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        
         <!-- =========================================================== -->
         <!-- =========================== SPRING ======================== -->
         <!-- =========================================================== -->
@@ -64,7 +70,7 @@
         </dependency>
         
         <dependency>
-              <groupId>commons-io</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
         

@@ -39,7 +39,7 @@ import java.security.Principal;
 import java.util.List;
 import org.geosdi.geoplatform.core.model.GeoPlatformServer;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
-import org.geosdi.geoplatform.responce.ServerDTO;
+import org.geosdi.geoplatform.response.ServerDTO;
 import org.geosdi.geoplatform.services.core.api.resources.GPServerResource;
 
 /**

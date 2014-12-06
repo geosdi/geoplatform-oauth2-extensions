@@ -35,7 +35,6 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.app;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.Application;
 import io.dropwizard.auth.oauth.OAuthProvider;
 import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
@@ -43,6 +42,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.Map;
 import javax.ws.rs.Path;
+import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.exception.OAuth2ExceptionProvider;
 import org.geosdi.geoplatform.experimental.dropwizard.config.CoreServiceConfig;
 import org.geosdi.geoplatform.experimental.dropwizard.config.spring.CoreOAuth2ServiceLoader;
 import org.geosdi.geoplatform.experimental.dropwizard.health.CoreServiceHealthCheck;
@@ -79,6 +79,7 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
 
         e.jersey().register(new JacksonMessageBodyProvider(
                 new GPJacksonSupport().getDefaultMapper(), e.getValidator()));
+        e.jersey().register(new OAuth2ExceptionProvider());
         e.jersey().register(new OAuthProvider<>(new CoreOAuthAuthenticator(t),
                 "protected-resources"));
         e.healthChecks().register("service-health-check",
@@ -93,7 +94,7 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
 
     @Override
     public String getName() {
-        return "GeoPlatform OAUTH2 Core Service Extension.";
+        return "GeoPlatform OAUTH2 Core Service Extension";
     }
 
 }

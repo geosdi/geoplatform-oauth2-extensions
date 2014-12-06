@@ -36,14 +36,12 @@
 package org.geosdi.geoplatform.experimental.connector.core.spring.connector;
 
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import java.io.IOException;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.io.IOUtils;
+import javax.ws.rs.core.MultivaluedMap;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
-import org.geosdi.geoplatform.core.model.GPAuthority;
 import org.geosdi.geoplatform.core.model.GPBBox;
 import org.geosdi.geoplatform.core.model.GPFolder;
 import org.geosdi.geoplatform.core.model.GPLayerInfo;
@@ -81,23 +79,25 @@ import org.geosdi.geoplatform.request.project.SaveProjectRequest;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.request.viewport.InsertViewportRequest;
 import org.geosdi.geoplatform.request.viewport.ManageViewportRequest;
-import org.geosdi.geoplatform.responce.AccountProjectPropertiesDTO;
-import org.geosdi.geoplatform.responce.FolderDTO;
-import org.geosdi.geoplatform.responce.GetDataSourceResponse;
-import org.geosdi.geoplatform.responce.MessageDTO;
-import org.geosdi.geoplatform.responce.ProjectDTO;
-import org.geosdi.geoplatform.responce.RasterPropertiesDTO;
-import org.geosdi.geoplatform.responce.ServerDTO;
-import org.geosdi.geoplatform.responce.ShortAccountDTOContainer;
-import org.geosdi.geoplatform.responce.ShortLayerDTO;
-import org.geosdi.geoplatform.responce.UserDTO;
-import org.geosdi.geoplatform.responce.WSGetAccountProjectsResponse;
-import org.geosdi.geoplatform.responce.authority.GetAuthorityResponse;
-import org.geosdi.geoplatform.responce.collection.GuiComponentsPermissionMapData;
-import org.geosdi.geoplatform.responce.collection.LongListStore;
-import org.geosdi.geoplatform.responce.collection.TreeFolderElementsStore;
-import org.geosdi.geoplatform.responce.role.WSGetRoleResponse;
-import org.geosdi.geoplatform.responce.viewport.WSGetViewportResponse;
+import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
+import org.geosdi.geoplatform.response.FolderDTO;
+import org.geosdi.geoplatform.response.GetDataSourceResponse;
+import org.geosdi.geoplatform.response.MessageDTO;
+import org.geosdi.geoplatform.response.ProjectDTO;
+import org.geosdi.geoplatform.response.RasterPropertiesDTO;
+import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.ServerDTO;
+import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
+import org.geosdi.geoplatform.response.ShortLayerDTO;
+import org.geosdi.geoplatform.response.UserDTO;
+import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
+import org.geosdi.geoplatform.response.collection.GuiComponentsPermissionMapData;
+import org.geosdi.geoplatform.response.collection.LongListStore;
+import org.geosdi.geoplatform.response.collection.TreeFolderElementsStore;
+import org.geosdi.geoplatform.response.role.WSGetRoleResponse;
+import org.geosdi.geoplatform.response.viewport.WSGetViewportResponse;
 import org.geosdi.geoplatform.services.core.api.GPCoreServiceApi;
 
 /**
@@ -108,6 +108,9 @@ import org.geosdi.geoplatform.services.core.api.GPCoreServiceApi;
 public class OAuth2CoreClientConnector extends AbstractClientConnector
         implements GPCoreServiceApi {
 
+    static final String LOGGER_MESSAGE = "\n\t@@@@@@@@@@@@@@@@@@@@@@@@@ACQUIRE ACCESS_TOKEN VALUE "
+            + ": {} for Method : {}\n";
+
     public OAuth2CoreClientConnector(ConnectorClientSettings theClientSettings,
             Client theClient, OAuth2TokenBuilder theTokenBuilder) {
         super(theClientSettings, theClient, theTokenBuilder);
@@ -115,129 +118,311 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public Long insertOrganization(GPOrganization organization) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertOrganization");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureOrganization/organizations/insertOrganization"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, organization);
     }
 
     @Override
     public Boolean deleteOrganization(Long organizationID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteOrganization");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureOrganization/organizations/deleteOrganization/"))
+                .path(String.valueOf(organizationID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
     public Long insertAccount(InsertAccountRequest insertAccountRequest)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertAccount");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/insertAccount"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, insertAccountRequest);
     }
 
     @Override
     public Long updateUser(GPUser user) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateUser");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/updateUser"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, user);
     }
 
     @Override
     public Boolean deleteAccount(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteAccount");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/deleteAccount/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
     public GPUser getUserDetail(Long userID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getUserDetail");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getUserDetail/"))
+                .path(String.valueOf(userID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPUser.class);
     }
 
     @Override
-    public GPUser getUserDetailByUsername(SearchRequest request) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GPUser getUserDetailByUsername(SearchRequest request)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getUserDetailByUsername");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("nameLike", request.getNameLike());
+        if (request.getLikeType() != null) {
+            params.add("likeType", request.getLikeType().toString());
+        }
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getUserDetail/"
+                        + "getUserDetailByUsername"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPUser.class);
     }
 
     @Override
     public GPUser getUserDetailByUsernameAndPassword(String username,
             String plainPassword) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getUserDetailByUsernameAndPassword");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getUserDetail/"
+                        + "getUserDetailByUsernameAndPassword"))
+                .queryParam("username", username)
+                .queryParam("plainPassword", plainPassword)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPUser.class);
     }
 
     @Override
     public UserDTO getShortUser(Long userID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getShortUser");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getShortUser/"))
+                .path(String.valueOf(userID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(UserDTO.class);
     }
 
     @Override
     public UserDTO getShortUserByUsername(SearchRequest request)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getShortUserByUsername");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("nameLike", request.getNameLike());
+        if (request.getLikeType() != null) {
+            params.add("likeType", request.getLikeType().name());
+        }
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getShortUserByUsername"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(UserDTO.class);
     }
 
     @Override
-    public List<UserDTO> searchUsers(Long userID, PaginatedSearchRequest request)
+    public SearchUsersResponse searchUsers(Long userID,
+            PaginatedSearchRequest request)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "searchUsers");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("userID", String.valueOf(userID));
+        params.add("num", String.valueOf(request.getNum()));
+        params.add("page", String.valueOf(request.getPage()));
+        if (request.getNameLike() != null) {
+            params.add("nameLike", request.getNameLike());
+        }
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/searchUsers"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(SearchUsersResponse.class);
     }
 
     @Override
     public ShortAccountDTOContainer getAllAccounts() {
         String accessToken = super.createToken();
 
-        logger.debug("\n@@@@@@@@@@@@@@@@@@@@@@@@@ACQUIRE ACCESS_TOKEN VALUE "
-                + ": {} for Method : getAllAccounts\n", accessToken);
-
-        ClientResponse clientResponse = client.resource(
-                super.getRestServiceURL().concat(
-                        "jsonSecureAccount/accounts/getAllAccounts"))
-                .header(HttpHeaders.AUTHORIZATION, "bearer ".concat(
-                                accessToken))
-                .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).get(
-                        ClientResponse.class);
-
-        try {
-            String json = IOUtils.toString(clientResponse.getEntityInputStream());
-            logger.info("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@ECCOLA : {}", json);
-        } catch (IOException ex) {
-            logger.error("@@@@@@@@@@@@@@@@@@@IOException {}", ex);
-        }
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAllAccounts");
 
         return client.resource(super.getRestServiceURL().concat(
                 "jsonSecureAccount/accounts/getAllAccounts"))
-                .header(HttpHeaders.AUTHORIZATION, "bearer ".concat(
-                                accessToken))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
                 .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).get(
                         ShortAccountDTOContainer.class);
     }
 
     @Override
-    public ShortAccountDTOContainer getAccounts(String organization) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ShortAccountDTOContainer getAccounts(String organization)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAccounts");
+
+        return client.resource(super.getRestServiceURL().concat(
+                "jsonSecureAccount/accounts/getAllOrganizationAccount/"))
+                .path(organization)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).get(
+                        ShortAccountDTOContainer.class);
     }
 
     @Override
     public Long getAccountsCount(SearchRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAccountsCount");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("nameLike", request.getNameLike());
+        if (request.getLikeType() != null) {
+            params.add("likeType", request.getLikeType().name());
+        }
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getAccountsCount"))
+                .queryParams(params)
+                .type(MediaType.APPLICATION_FORM_URLENCODED)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(Long.class);
     }
 
     @Override
     public Long getUsersCount(String organization, SearchRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getUsersCount");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("organization", organization);
+        if (request.getNameLike() != null) {
+            params.add("nameLike", request.getNameLike());
+        }
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/getUsersCount"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(Long.class);
     }
 
     @Override
     public GetAuthorityResponse getAuthorities(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAuthorities");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/authorities/getAuthorities/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GetAuthorityResponse.class);
     }
 
     @Override
-    public List<GPAuthority> getAuthoritiesDetail(String accountNaturalID)
+    public GetAuthoritiesResponse getAuthoritiesDetail(String accountNaturalID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAuthoritiesDetail");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/authorities/getAuthoritiesByAccountNaturalID/"))
+                .path(String.valueOf(accountNaturalID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GetAuthoritiesResponse.class);
     }
 
     @Override
     public void forceTemporaryAccount(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "forceTemporaryAccount");
+
+        client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/forceTemporaryAccount/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put();
     }
 
     @Override
     public void forceExpiredTemporaryAccount(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "forceExpiredTemporaryAccount");
+
+        client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/forceExpiredTemporaryAccount/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put();
     }
 
     @Override

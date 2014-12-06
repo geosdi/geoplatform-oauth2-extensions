@@ -64,5 +64,4 @@ class OAuth2CoreClientConnectorConfig {
     Client createClient() {
         return Client.create(new DefaultClientConfig(CoreJacksonProvider.class));
     }
-
 }
