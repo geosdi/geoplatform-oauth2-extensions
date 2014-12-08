@@ -41,10 +41,10 @@ import org.geosdi.geoplatform.request.InsertAccountRequest;
 import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.SearchRequest;
-import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.SearchUsersResponseWS;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.UserDTO;
-import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.services.core.api.resources.GPAccountResource;
 
@@ -82,10 +82,10 @@ public interface SecureAccountResource extends GPAccountResource {
 
     ShortAccountDTOContainer getAllAccounts(Principal principal);
 
-    SearchUsersResponse searchUsers(Principal principal, Long userID,
+    SearchUsersResponseWS searchUsers(Principal principal, Long userID,
             PaginatedSearchRequest request) throws Exception;
 
-    SearchUsersResponse searchUsers(Principal principal, Long userID,
+    SearchUsersResponseWS searchUsers(Principal principal, Long userID,
             Integer num, Integer page, String nameLike) throws Exception;
 
     ShortAccountDTOContainer getAccounts(Principal principal,
@@ -105,7 +105,7 @@ public interface SecureAccountResource extends GPAccountResource {
     GetAuthorityResponse getAuthorities(Principal principal,
             Long accountID) throws Exception;
 
-    GetAuthoritiesResponse getAuthoritiesDetail(Principal principal,
+    GetAuthoritiesResponseWS getAuthoritiesDetail(Principal principal,
             String accountNaturalID) throws Exception;
 
     void forceTemporaryAccount(Principal principal, Long accountID)

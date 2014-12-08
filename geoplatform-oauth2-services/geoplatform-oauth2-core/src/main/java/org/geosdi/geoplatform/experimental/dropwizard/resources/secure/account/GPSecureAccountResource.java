@@ -52,10 +52,10 @@ import org.geosdi.geoplatform.request.InsertAccountRequest;
 import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.SearchRequest;
-import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.SearchUsersResponseWS;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.UserDTO;
-import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
@@ -182,8 +182,21 @@ public class GPSecureAccountResource extends BaseAccountResource {
         return super.getAllAccounts();
     }
 
+    /**
+     * <p>
+     * Do not use this method to do a REST request but use
+     * {@link #searchUsers(java.security.Principal, java.lang.Long, java.lang.Integer, java.lang.Integer, java.lang.String) searchUsers}
+     * </p>
+     *
+     * @param principal
+     * @param userID
+     * @param request
+     * @return SearchUsersResponseWS
+     * 
+     * @throws Exception
+     */
     @Override
-    public SearchUsersResponse searchUsers(Principal principal, Long userID,
+    public SearchUsersResponseWS searchUsers(Principal principal, Long userID,
             PaginatedSearchRequest request) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure searchUsers "
                 + "- Principal : {}\n\n", principal.getName());
@@ -193,7 +206,7 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @GET
     @Path(value = GPServiceRSPathConfig.SEARCH_USERS_PATH)
     @Override
-    public SearchUsersResponse searchUsers(@Auth Principal principal,
+    public SearchUsersResponseWS searchUsers(@Auth Principal principal,
             @QueryParam(value = "userID") Long userID,
             @QueryParam(value = "num") Integer num,
             @QueryParam(value = "page") Integer page,
@@ -260,7 +273,8 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_AUTHORITIES_BY_ACCOUNT_NATURAL_ID)
     @Override
-    public GetAuthoritiesResponse getAuthoritiesDetail(@Auth Principal principal,
+    public GetAuthoritiesResponseWS getAuthoritiesDetail(
+            @Auth Principal principal,
             @PathParam(value = "accountNaturalID") String accountNaturalID)
             throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "

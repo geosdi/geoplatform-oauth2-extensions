@@ -85,13 +85,13 @@ import org.geosdi.geoplatform.response.GetDataSourceResponse;
 import org.geosdi.geoplatform.response.MessageDTO;
 import org.geosdi.geoplatform.response.ProjectDTO;
 import org.geosdi.geoplatform.response.RasterPropertiesDTO;
-import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.SearchUsersResponseWS;
 import org.geosdi.geoplatform.response.ServerDTO;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.ShortLayerDTO;
 import org.geosdi.geoplatform.response.UserDTO;
 import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
-import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.response.collection.GuiComponentsPermissionMapData;
 import org.geosdi.geoplatform.response.collection.LongListStore;
@@ -274,7 +274,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     }
 
     @Override
-    public SearchUsersResponse searchUsers(Long userID,
+    public SearchUsersResponseWS searchUsers(Long userID,
             PaginatedSearchRequest request)
             throws Exception {
         String accessToken = super.createToken();
@@ -294,7 +294,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .queryParams(params)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .get(SearchUsersResponse.class);
+                .get(SearchUsersResponseWS.class);
     }
 
     @Override
@@ -383,7 +383,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     }
 
     @Override
-    public GetAuthoritiesResponse getAuthoritiesDetail(String accountNaturalID)
+    public GetAuthoritiesResponseWS getAuthoritiesDetail(String accountNaturalID)
             throws Exception {
         String accessToken = super.createToken();
 
@@ -394,7 +394,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .path(String.valueOf(accountNaturalID))
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .get(GetAuthoritiesResponse.class);
+                .get(GetAuthoritiesResponseWS.class);
     }
 
     @Override

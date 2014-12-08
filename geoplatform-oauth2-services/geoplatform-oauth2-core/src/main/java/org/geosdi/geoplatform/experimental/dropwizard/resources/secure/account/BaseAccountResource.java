@@ -40,10 +40,10 @@ import org.geosdi.geoplatform.core.model.GPUser;
 import org.geosdi.geoplatform.request.InsertAccountRequest;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.SearchRequest;
-import org.geosdi.geoplatform.response.SearchUsersResponse;
+import org.geosdi.geoplatform.response.SearchUsersResponseWS;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.UserDTO;
-import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponse;
+import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -104,7 +104,7 @@ abstract class BaseAccountResource implements SecureAccountResource {
     }
 
     @Override
-    public SearchUsersResponse searchUsers(Long userID, PaginatedSearchRequest request)
+    public SearchUsersResponseWS searchUsers(Long userID, PaginatedSearchRequest request)
             throws Exception {
         return this.gpAccountDelegate.searchUsers(userID, request);
     }
@@ -136,7 +136,7 @@ abstract class BaseAccountResource implements SecureAccountResource {
     }
 
     @Override
-    public GetAuthoritiesResponse getAuthoritiesDetail(String accountNaturalID)
+    public GetAuthoritiesResponseWS getAuthoritiesDetail(String accountNaturalID)
             throws Exception {
         return this.gpAccountDelegate.getAuthoritiesDetail(accountNaturalID);
     }

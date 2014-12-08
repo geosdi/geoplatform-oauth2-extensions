@@ -337,14 +337,14 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
         insertMassiveUsers("-rs");
         List<UserDTO> users = oauth2CoreClientConnector.searchUsers(idUser,
-                new PaginatedSearchRequest(25, 0)).getUsers();
+                new PaginatedSearchRequest(25, 0)).getSearchUsers();
 
         logger.info("################################ {}", users);
 
         Assert.assertEquals(25, users.size());
 
         Assert.assertEquals(6, oauth2CoreClientConnector.searchUsers(idUser,
-                new PaginatedSearchRequest(25, 1)).getUsers().size());
+                new PaginatedSearchRequest(25, 1)).getSearchUsers().size());
 
         Long userCount = oauth2CoreClientConnector.getUsersCount(
                 organizationTest.getName(), new SearchRequest());
