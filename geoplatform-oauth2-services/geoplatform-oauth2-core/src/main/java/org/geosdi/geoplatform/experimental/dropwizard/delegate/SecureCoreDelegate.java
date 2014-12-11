@@ -33,51 +33,27 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.acl;
+package org.geosdi.geoplatform.experimental.dropwizard.delegate;
 
-import javax.annotation.Resource;
-import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
-import org.geosdi.geoplatform.request.organization.WSPutRolePermissionRequest;
-import org.geosdi.geoplatform.request.organization.WSSaveRoleRequest;
-import org.geosdi.geoplatform.response.collection.GuiComponentsPermissionMapData;
-import org.geosdi.geoplatform.response.role.WSGetRoleResponse;
+import org.geosdi.geoplatform.services.core.api.resources.GPACLResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPAccountProjectResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPAccountResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPFolderProjectResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPFolderResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPLayerResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPMessageResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPOrganizationResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPProjectResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPServerResource;
+import org.geosdi.geoplatform.services.core.api.resources.GPViewportResource;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-abstract class BaseACLResource implements SecureACLResource {
-
-    @Resource(name = "gpSecureCoreDelegate")
-    protected SecureCoreDelegate gpSecureCoreDelegate;
-
-    @Override
-    public WSGetRoleResponse getAllRoles(String organization) throws Exception {
-        return this.gpSecureCoreDelegate.getAllRoles(organization);
-    }
-
-    @Override
-    public GuiComponentsPermissionMapData getAccountPermission(Long accountID)
-            throws Exception {
-        return this.gpSecureCoreDelegate.getAccountPermission(accountID);
-    }
-
-    @Override
-    public GuiComponentsPermissionMapData getRolePermission(String role,
-            String organization) throws Exception {
-        return this.gpSecureCoreDelegate.getRolePermission(role, organization);
-    }
-
-    @Override
-    public Boolean updateRolePermission(
-            WSPutRolePermissionRequest putRolePermissionReq) throws Exception {
-        return this.gpSecureCoreDelegate.updateRolePermission(putRolePermissionReq);
-    }
-
-    @Override
-    public Boolean saveRole(WSSaveRoleRequest saveRoleReq) throws Exception {
-        return this.gpSecureCoreDelegate.saveRole(saveRoleReq);
-    }
-
+public interface SecureCoreDelegate extends GPOrganizationResource,
+        GPAccountResource, GPAccountProjectResource, GPProjectResource,
+        GPViewportResource, GPFolderResource, GPFolderProjectResource,
+        GPLayerResource, GPACLResource, GPServerResource, GPMessageResource {
 }

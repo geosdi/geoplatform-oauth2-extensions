@@ -35,9 +35,9 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.organization;
 
-import org.geosdi.geoplatform.core.delegate.api.organization.OrganizationDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPOrganization;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 
 /**
  *
@@ -46,16 +46,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseOrganizationResource implements SecureOrganizationResource {
 
-    @Autowired
-    protected OrganizationDelegate gpOrganizationDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public Long insertOrganization(GPOrganization organization) throws Exception {
-        return this.gpOrganizationDelegate.insertOrganization(organization);
+        return this.gpSecureCoreDelegate.insertOrganization(organization);
     }
 
     @Override
     public Boolean deleteOrganization(Long organizationID) throws Exception {
-        return this.gpOrganizationDelegate.deleteOrganization(organizationID);
+        return this.gpSecureCoreDelegate.deleteOrganization(organizationID);
     }
 }

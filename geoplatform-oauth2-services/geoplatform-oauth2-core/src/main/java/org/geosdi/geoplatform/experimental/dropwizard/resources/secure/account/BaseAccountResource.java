@@ -35,8 +35,9 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.account;
 
-import org.geosdi.geoplatform.core.delegate.api.account.AccountDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPUser;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.InsertAccountRequest;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.SearchRequest;
@@ -45,7 +46,6 @@ import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.UserDTO;
 import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -54,100 +54,100 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseAccountResource implements SecureAccountResource {
 
-    @Autowired
-    protected AccountDelegate gpAccountDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public Long insertAccount(InsertAccountRequest insertAccountRequest) throws
             Exception {
-        return this.gpAccountDelegate.insertAccount(insertAccountRequest);
+        return this.gpSecureCoreDelegate.insertAccount(insertAccountRequest);
     }
 
     @Override
     public Long updateUser(GPUser user) throws Exception {
-        return this.gpAccountDelegate.updateUser(user);
+        return this.gpSecureCoreDelegate.updateUser(user);
     }
 
     @Override
     public Boolean deleteAccount(Long accountID) throws Exception {
-        return this.gpAccountDelegate.deleteAccount(accountID);
+        return this.gpSecureCoreDelegate.deleteAccount(accountID);
     }
 
     @Override
     public GPUser getUserDetail(Long userID) throws Exception {
-        return this.gpAccountDelegate.getUserDetail(userID);
+        return this.gpSecureCoreDelegate.getUserDetail(userID);
     }
 
     @Override
     public GPUser getUserDetailByUsername(SearchRequest request) throws
             Exception {
-        return this.gpAccountDelegate.getUserDetailByUsername(request);
+        return this.gpSecureCoreDelegate.getUserDetailByUsername(request);
     }
 
     @Override
     public GPUser getUserDetailByUsernameAndPassword(String username,
             String plainPassword) throws Exception {
-        return this.gpAccountDelegate.getUserDetailByUsernameAndPassword(
+        return this.gpSecureCoreDelegate.getUserDetailByUsernameAndPassword(
                 username, plainPassword);
     }
 
     @Override
     public UserDTO getShortUser(Long userID) throws
             Exception {
-        return this.gpAccountDelegate.getShortUser(userID);
+        return this.gpSecureCoreDelegate.getShortUser(userID);
     }
 
     @Override
     public UserDTO getShortUserByUsername(SearchRequest request)
             throws Exception {
-        return this.gpAccountDelegate.getShortUserByUsername(request);
+        return this.gpSecureCoreDelegate.getShortUserByUsername(request);
     }
 
     @Override
     public SearchUsersResponseWS searchUsers(Long userID, PaginatedSearchRequest request)
             throws Exception {
-        return this.gpAccountDelegate.searchUsers(userID, request);
+        return this.gpSecureCoreDelegate.searchUsers(userID, request);
     }
 
     @Override
     public ShortAccountDTOContainer getAllAccounts() {
-        return this.gpAccountDelegate.getAllAccounts();
+        return this.gpSecureCoreDelegate.getAllAccounts();
     }
 
     @Override
     public ShortAccountDTOContainer getAccounts(String organization) throws
             Exception {
-        return this.gpAccountDelegate.getAccounts(organization);
+        return this.gpSecureCoreDelegate.getAccounts(organization);
     }
 
     @Override
     public Long getAccountsCount(SearchRequest request) {
-        return this.gpAccountDelegate.getAccountsCount(request);
+        return this.gpSecureCoreDelegate.getAccountsCount(request);
     }
 
     @Override
     public Long getUsersCount(String organization, SearchRequest request) {
-        return this.gpAccountDelegate.getUsersCount(organization, request);
+        return this.gpSecureCoreDelegate.getUsersCount(organization, request);
     }
 
     @Override
     public GetAuthorityResponse getAuthorities(Long accountID) throws Exception {
-        return this.gpAccountDelegate.getAuthorities(accountID);
+        return this.gpSecureCoreDelegate.getAuthorities(accountID);
     }
 
     @Override
     public GetAuthoritiesResponseWS getAuthoritiesDetail(String accountNaturalID)
             throws Exception {
-        return this.gpAccountDelegate.getAuthoritiesDetail(accountNaturalID);
+        return this.gpSecureCoreDelegate.getAuthoritiesDetail(accountNaturalID);
     }
 
     @Override
     public void forceTemporaryAccount(Long accountID) throws Exception {
-        this.gpAccountDelegate.forceTemporaryAccount(accountID);
+        this.gpSecureCoreDelegate.forceTemporaryAccount(accountID);
     }
 
     @Override
     public void forceExpiredTemporaryAccount(Long accountID) throws Exception {
-        this.gpAccountDelegate.forceExpiredTemporaryAccount(accountID);
+        this.gpSecureCoreDelegate.forceExpiredTemporaryAccount(accountID);
     }
 }

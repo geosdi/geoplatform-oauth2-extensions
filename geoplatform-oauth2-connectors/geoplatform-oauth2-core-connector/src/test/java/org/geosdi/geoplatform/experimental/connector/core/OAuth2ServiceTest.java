@@ -104,7 +104,7 @@ public abstract class OAuth2ServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        logger.trace("\n\n\t@@@@@@@ {}.setUp @@@@@@\n\n",
+        logger.debug("\n\n\t@@@@@@@ {}.setUp @@@@@@\n\n",
                 this.getClass().getSimpleName());
 
         // Insert Organization

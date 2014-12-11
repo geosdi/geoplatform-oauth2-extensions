@@ -36,11 +36,10 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.project;
 
 import java.util.List;
-import org.geosdi.geoplatform.core.delegate.api.project.ProjectDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPProject;
-import org.geosdi.geoplatform.exception.IllegalParameterFault;
-import org.geosdi.geoplatform.exception.ResourceNotFoundFault;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
 import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
@@ -51,7 +50,6 @@ import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
 import org.geosdi.geoplatform.response.ProjectDTO;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -60,8 +58,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseProjectResource implements SecureProjectResource {
 
-    @Autowired
-    protected ProjectDelegate gpProjectDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     //<editor-fold defaultstate="collapsed" desc="Project">
     // =========================================================================
@@ -70,37 +68,37 @@ abstract class BaseProjectResource implements SecureProjectResource {
     @Override
     public Long saveProject(SaveProjectRequest saveProjectRequest)
             throws Exception {
-        return this.gpProjectDelegate.saveProject(saveProjectRequest);
+        return this.gpSecureCoreDelegate.saveProject(saveProjectRequest);
     }
 
     @Override
     public Long insertProject(GPProject project) throws Exception {
-        return this.gpProjectDelegate.insertProject(project);
+        return this.gpSecureCoreDelegate.insertProject(project);
     }
 
     @Override
     public Long updateProject(GPProject project) throws Exception {
-        return this.gpProjectDelegate.updateProject(project);
+        return this.gpSecureCoreDelegate.updateProject(project);
     }
 
     @Override
     public Boolean deleteProject(Long projectID) throws Exception {
-        return this.gpProjectDelegate.deleteProject(projectID);
+        return this.gpSecureCoreDelegate.deleteProject(projectID);
     }
 
     @Override
     public GPProject getProjectDetail(Long projectID) throws Exception {
-        return this.gpProjectDelegate.getProjectDetail(projectID);
+        return this.gpSecureCoreDelegate.getProjectDetail(projectID);
     }
 
     @Override
     public Integer getNumberOfElementsProject(Long projectID) throws Exception {
-        return this.gpProjectDelegate.getNumberOfElementsProject(projectID);
+        return this.gpSecureCoreDelegate.getNumberOfElementsProject(projectID);
     }
 
     @Override
     public void setProjectShared(Long projectID) throws Exception {
-        this.gpProjectDelegate.setProjectShared(projectID);
+        this.gpSecureCoreDelegate.setProjectShared(projectID);
     }
     //</editor-fold>
 
@@ -110,117 +108,120 @@ abstract class BaseProjectResource implements SecureProjectResource {
     // =========================================================================
     @Override
     public Long insertAccountProject(GPAccountProject accountProject) throws
-            IllegalParameterFault {
-        return this.gpProjectDelegate.insertAccountProject(accountProject);
+            Exception {
+        return this.gpSecureCoreDelegate.insertAccountProject(accountProject);
     }
 
     @Override
     public Long updateAccountProject(GPAccountProject accountProject)
-            throws ResourceNotFoundFault, IllegalParameterFault {
-        return this.gpProjectDelegate.updateAccountProject(accountProject);
+            throws Exception {
+        return this.gpSecureCoreDelegate.updateAccountProject(accountProject);
     }
 
     @Override
     public Boolean deleteAccountProject(Long accountProjectID)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.deleteAccountProject(accountProjectID);
+            throws Exception {
+        return this.gpSecureCoreDelegate.deleteAccountProject(accountProjectID);
     }
 
     @Override
     public GPAccountProject getAccountProject(Long accountProjectID)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getAccountProject(accountProjectID);
+            throws Exception {
+        return this.gpSecureCoreDelegate.getAccountProject(accountProjectID);
     }
 
     @Override
     public GPAccountProject getProjectOwner(Long projectID) throws Exception {
-        return this.gpProjectDelegate.getProjectOwner(projectID);
+        return this.gpSecureCoreDelegate.getProjectOwner(projectID);
     }
 
     @Override
     public Boolean setProjectOwner(RequestByAccountProjectIDs request)
             throws Exception {
-        return this.gpProjectDelegate.setProjectOwner(request);
+        return this.gpSecureCoreDelegate.setProjectOwner(request);
     }
 
     @Override
     public WSGetAccountProjectsResponse getAccountProjectsByAccountID(
             Long accountID) {
-        return this.gpProjectDelegate.getAccountProjectsByAccountID(accountID);
+        return this.gpSecureCoreDelegate.getAccountProjectsByAccountID(accountID);
     }
 
     @Override
     public GPProject getDefaultProject(Long accountID) throws Exception {
-        return this.gpProjectDelegate.getDefaultProject(accountID);
+        return this.gpSecureCoreDelegate.getDefaultProject(accountID);
     }
 
     @Override
     public ProjectDTO getDefaultProjectDTO(Long accountID) throws Exception {
-        return this.gpProjectDelegate.getDefaultProjectDTO(accountID);
+        return this.gpSecureCoreDelegate.getDefaultProjectDTO(accountID);
     }
 
     @Override
     public GPProject updateDefaultProject(Long accountID, Long projectID)
             throws Exception {
-        return this.gpProjectDelegate.updateDefaultProject(accountID, projectID);
+        return this.gpSecureCoreDelegate.updateDefaultProject(accountID,
+                projectID);
     }
 
     @Override
     public WSGetAccountProjectsResponse getAccountProjectsByProjectID(
             Long projectID) {
-        return this.gpProjectDelegate.getAccountProjectsByAccountID(projectID);
+        return this.gpSecureCoreDelegate.getAccountProjectsByProjectID(projectID);
     }
 
     @Override
     public GPAccountProject getAccountProjectByAccountAndProjectIDs(
-            Long accountID, Long projectID) throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getAccountProjectByAccountAndProjectIDs(
+            Long accountID, Long projectID) throws Exception {
+        return this.gpSecureCoreDelegate.getAccountProjectByAccountAndProjectIDs(
                 accountID, projectID);
     }
 
     @Override
     public Long getAccountProjectsCount(Long accountID, SearchRequest request)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getAccountProjectsCount(accountID, request);
+            throws Exception {
+        return this.gpSecureCoreDelegate.getAccountProjectsCount(accountID,
+                request);
     }
 
     @Override
     public GPAccountProject getDefaultAccountProject(Long accountID) throws
-            ResourceNotFoundFault {
-        return this.gpProjectDelegate.getDefaultAccountProject(accountID);
+            Exception {
+        return this.gpSecureCoreDelegate.getDefaultAccountProject(accountID);
     }
 
     @Override
     public List<ProjectDTO> searchAccountProjects(Long accountID,
-            PaginatedSearchRequest request) throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.searchAccountProjects(accountID, request);
+            PaginatedSearchRequest request) throws Exception {
+        return this.gpSecureCoreDelegate.searchAccountProjects(accountID,
+                request);
     }
 
     @Override
     public Boolean saveAccountProjectProperties(
             AccountProjectPropertiesDTO accountProjectProperties)
-            throws ResourceNotFoundFault, IllegalParameterFault {
-        return this.gpProjectDelegate.saveAccountProjectProperties(
+            throws Exception {
+        return this.gpSecureCoreDelegate.saveAccountProjectProperties(
                 accountProjectProperties);
     }
 
     @Override
     public ShortAccountDTOContainer getAccountsByProjectID(Long projectID)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getAccountsByProjectID(projectID);
+            throws Exception {
+        return this.gpSecureCoreDelegate.getAccountsByProjectID(projectID);
     }
 
     @Override
     public ShortAccountDTOContainer getAccountsToShareByProjectID(Long projectID)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getAccountsToShareByProjectID(projectID);
+            throws Exception {
+        return this.gpSecureCoreDelegate.getAccountsToShareByProjectID(projectID);
     }
 
     @Override
     public Boolean updateAccountsProjectSharing(
             PutAccountsProjectRequest apRequest)
-            throws ResourceNotFoundFault, IllegalParameterFault {
-        return this.gpProjectDelegate.updateAccountsProjectSharing(apRequest);
+            throws Exception {
+        return this.gpSecureCoreDelegate.updateAccountsProjectSharing(apRequest);
     }
      //</editor-fold>
 
@@ -230,28 +231,27 @@ abstract class BaseProjectResource implements SecureProjectResource {
     // =========================================================================
     @Override
     public ProjectDTO getProjectWithRootFolders(Long projectID, Long accountID)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getProjectWithExpandedFolders(projectID,
+            throws Exception {
+        return this.gpSecureCoreDelegate.getProjectWithExpandedFolders(projectID,
                 accountID);
     }
 
     @Override
     public ProjectDTO getProjectWithExpandedFolders(Long projectID,
-            Long accountID)
-            throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.getProjectWithExpandedFolders(projectID,
+            Long accountID) throws Exception {
+        return this.gpSecureCoreDelegate.getProjectWithExpandedFolders(projectID,
                 accountID);
     }
 
     @Override
-    public ProjectDTO exportProject(Long projectID) throws ResourceNotFoundFault {
-        return this.gpProjectDelegate.exportProject(projectID);
+    public ProjectDTO exportProject(Long projectID) throws Exception {
+        return this.gpSecureCoreDelegate.exportProject(projectID);
     }
 
     @Override
     public Long importProject(ImportProjectRequest impRequest)
-            throws IllegalParameterFault, ResourceNotFoundFault {
-        return this.gpProjectDelegate.importProject(impRequest);
+            throws Exception {
+        return this.gpSecureCoreDelegate.importProject(impRequest);
     }
      //</editor-fold>
 }

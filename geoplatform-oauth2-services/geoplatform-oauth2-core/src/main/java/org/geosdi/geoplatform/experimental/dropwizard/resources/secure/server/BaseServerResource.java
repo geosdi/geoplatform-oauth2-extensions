@@ -36,11 +36,11 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.server;
 
 import java.util.List;
-import org.geosdi.geoplatform.core.delegate.api.server.ServerDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GeoPlatformServer;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.response.ServerDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -49,49 +49,49 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseServerResource implements SecureServerResource {
     
-    @Autowired
-    protected ServerDelegate gpServerDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public Long insertServer(GeoPlatformServer server) {
-        return this.gpServerDelegate.insertServer(server);
+        return this.gpSecureCoreDelegate.insertServer(server);
     }
 
     @Override
     public Long updateServer(GeoPlatformServer server) throws Exception {
-        return this.gpServerDelegate.updateServer(server);
+        return this.gpSecureCoreDelegate.updateServer(server);
     }
 
     @Override
     public Boolean deleteServer(Long serverID) throws Exception {
-        return this.gpServerDelegate.deleteServer(serverID);
+        return this.gpSecureCoreDelegate.deleteServer(serverID);
     }
 
     @Override
     public List<ServerDTO> getAllServers(String organizazionName)
             throws Exception {
-        return this.gpServerDelegate.getAllServers(organizazionName);
+        return this.gpSecureCoreDelegate.getAllServers(organizazionName);
     }
 
     @Override
     public GeoPlatformServer getServerDetail(Long serverID) throws Exception {
-        return this.gpServerDelegate.getServerDetail(serverID);
+        return this.gpSecureCoreDelegate.getServerDetail(serverID);
     }
 
     @Override
     public ServerDTO getShortServer(String serverUrl) throws Exception {
-        return this.gpServerDelegate.getShortServer(serverUrl);
+        return this.gpSecureCoreDelegate.getShortServer(serverUrl);
     }
 
     @Override
     public GeoPlatformServer getServerDetailByUrl(String serverUrl)
             throws Exception {
-        return this.gpServerDelegate.getServerDetailByUrl(serverUrl);
+        return this.gpSecureCoreDelegate.getServerDetailByUrl(serverUrl);
     }
 
     @Override
     public ServerDTO saveServer(WSSaveServerRequest saveServerReq)
             throws Exception {
-        return this.gpServerDelegate.saveServer(saveServerReq);
+        return this.gpSecureCoreDelegate.saveServer(saveServerReq);
     }
 }

@@ -36,11 +36,11 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.message;
 
 import java.util.List;
-import org.geosdi.geoplatform.core.delegate.api.message.MessageDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPMessage;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
 import org.geosdi.geoplatform.response.MessageDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -49,50 +49,50 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseMessageResource implements SecureMessageResource {
     
-    @Autowired
-    protected MessageDelegate gpMessageDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public Long insertMessage(GPMessage message) throws Exception {
-        return this.gpMessageDelegate.insertMessage(message);
+        return this.gpSecureCoreDelegate.insertMessage(message);
     }
 
     @Override
     public Boolean insertMultiMessage(MessageDTO messageDTO) throws Exception {
-        return this.gpMessageDelegate.insertMultiMessage(messageDTO);
+        return this.gpSecureCoreDelegate.insertMultiMessage(messageDTO);
     }
 
     @Override
     public Boolean deleteMessage(Long messageID) throws Exception {
-        return this.gpMessageDelegate.deleteMessage(messageID);
+        return this.gpSecureCoreDelegate.deleteMessage(messageID);
     }
 
     @Override
     public GPMessage getMessageDetail(Long messageID) throws Exception {
-        return this.gpMessageDelegate.getMessageDetail(messageID);
+        return this.gpSecureCoreDelegate.getMessageDetail(messageID);
     }
 
     @Override
     public List<GPMessage> getAllMessagesByRecipient(Long recipientID)
             throws Exception {
-        return this.gpMessageDelegate.getAllMessagesByRecipient(recipientID);
+        return this.gpSecureCoreDelegate.getAllMessagesByRecipient(recipientID);
     }
 
     @Override
     public List<GPMessage> getUnreadMessagesByRecipient(Long recipientID)
             throws Exception {
-        return this.gpMessageDelegate.getUnreadMessagesByRecipient(recipientID);
+        return this.gpSecureCoreDelegate.getUnreadMessagesByRecipient(recipientID);
     }
 
     @Override
     public Boolean markMessageAsRead(Long messageID) throws Exception {
-        return this.gpMessageDelegate.markMessageAsRead(messageID);
+        return this.gpSecureCoreDelegate.markMessageAsRead(messageID);
     }
 
     @Override
     public Boolean markAllMessagesAsReadByRecipient(Long recipientID)
             throws Exception {
-        return this.gpMessageDelegate.markAllMessagesAsReadByRecipient(
+        return this.gpSecureCoreDelegate.markAllMessagesAsReadByRecipient(
                 recipientID);
     }
 
@@ -100,7 +100,7 @@ abstract class BaseMessageResource implements SecureMessageResource {
     public Boolean markMessagesAsReadByDate(
             MarkMessageReadByDateRequest markMessageAsReadByDateReq)
             throws Exception {
-        return this.gpMessageDelegate.markMessagesAsReadByDate(
+        return this.gpSecureCoreDelegate.markMessagesAsReadByDate(
                 markMessageAsReadByDateReq);
     }
 }

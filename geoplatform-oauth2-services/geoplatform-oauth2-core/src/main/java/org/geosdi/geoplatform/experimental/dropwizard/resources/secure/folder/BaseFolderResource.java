@@ -36,8 +36,9 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.folder;
 
 import java.util.List;
-import org.geosdi.geoplatform.core.delegate.api.folder.FolderDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPFolder;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.folder.InsertFolderRequest;
 import org.geosdi.geoplatform.request.folder.WSAddFolderAndTreeModificationsRequest;
 import org.geosdi.geoplatform.request.folder.WSDDFolderAndTreeModifications;
@@ -53,29 +54,29 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseFolderResource implements SecureFolderResource {
 
-    @Autowired
-    protected FolderDelegate gpFolderDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public Long insertFolder(InsertFolderRequest insertFolderRequest) throws
             Exception {
-        return this.gpFolderDelegate.insertFolder(insertFolderRequest);
+        return this.gpSecureCoreDelegate.insertFolder(insertFolderRequest);
     }
 
     @Override
     public Long updateFolder(GPFolder folder) throws Exception {
-        return this.gpFolderDelegate.updateFolder(folder);
+        return this.gpSecureCoreDelegate.updateFolder(folder);
     }
 
     @Override
     public Boolean deleteFolder(Long folderID) throws Exception {
-        return this.gpFolderDelegate.deleteFolder(folderID);
+        return this.gpSecureCoreDelegate.deleteFolder(folderID);
     }
 
     @Override
     public Long saveFolderProperties(Long folderID, String folderName,
             boolean checked, boolean expanded) throws Exception {
-        return this.gpFolderDelegate.saveFolderProperties(folderID, folderName,
+        return this.gpSecureCoreDelegate.saveFolderProperties(folderID, folderName,
                 checked, expanded);
     }
 
@@ -83,7 +84,7 @@ abstract class BaseFolderResource implements SecureFolderResource {
     public Long saveAddedFolderAndTreeModifications(
             WSAddFolderAndTreeModificationsRequest sftModificationRequest)
             throws Exception {
-        return this.gpFolderDelegate.saveAddedFolderAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveAddedFolderAndTreeModifications(
                 sftModificationRequest);
     }
 
@@ -91,7 +92,7 @@ abstract class BaseFolderResource implements SecureFolderResource {
     public Boolean saveDeletedFolderAndTreeModifications(
             WSDeleteFolderAndTreeModifications sdfModificationRequest) throws
             Exception {
-        return this.gpFolderDelegate.saveDeletedFolderAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveDeletedFolderAndTreeModifications(
                 sdfModificationRequest);
     }
 
@@ -99,28 +100,28 @@ abstract class BaseFolderResource implements SecureFolderResource {
     public Boolean saveDragAndDropFolderAndTreeModifications(
             WSDDFolderAndTreeModifications sddfTreeModificationRequest) throws
             Exception {
-        return this.gpFolderDelegate.saveDragAndDropFolderAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveDragAndDropFolderAndTreeModifications(
                 sddfTreeModificationRequest);
     }
 
     @Override
     public FolderDTO getShortFolder(Long folderID) throws Exception {
-        return this.gpFolderDelegate.getShortFolder(folderID);
+        return this.gpSecureCoreDelegate.getShortFolder(folderID);
     }
 
     @Override
     public GPFolder getFolderDetail(Long folderID) throws Exception {
-        return this.gpFolderDelegate.getFolderDetail(folderID);
+        return this.gpSecureCoreDelegate.getFolderDetail(folderID);
     }
 
     @Override
     public List<FolderDTO> getChildrenFolders(Long folderID) {
-        return this.gpFolderDelegate.getChildrenFolders(folderID);
+        return this.gpSecureCoreDelegate.getChildrenFolders(folderID);
     }
 
     @Override
     public TreeFolderElementsStore getChildrenElements(Long folderID) {
-        return this.gpFolderDelegate.getChildrenElements(folderID);
+        return this.gpSecureCoreDelegate.getChildrenElements(folderID);
     }
 
 }

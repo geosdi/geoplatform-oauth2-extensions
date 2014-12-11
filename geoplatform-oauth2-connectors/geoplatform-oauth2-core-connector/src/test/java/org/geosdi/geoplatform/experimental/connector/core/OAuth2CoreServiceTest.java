@@ -35,12 +35,18 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core;
 
+import java.util.ArrayList;
+import java.util.Date;
+import org.geosdi.geoplatform.core.model.GPFolder;
 import org.geosdi.geoplatform.core.model.GPOrganization;
+import org.geosdi.geoplatform.core.model.GPProject;
 import org.geosdi.geoplatform.core.model.GPUser;
 import org.geosdi.geoplatform.gui.shared.GPRole;
 import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.SearchRequest;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -59,6 +65,17 @@ abstract class OAuth2CoreServiceTest extends OAuth2ServiceTest {
     protected static final String passwordTest = usernameTest;
     protected static final String emailTest = usernameTest + "@" + domainNameTest;
     protected GPUser userTest;
+    // Projects
+    protected GPProject projectTest;
+    protected long idProjectTest = -1;
+    // Folders
+    protected static final String nameRootFolderA = "rootFolderA";
+    protected static final String nameRootFolderB = "rootFolderB";
+    protected GPFolder rootFolderA;
+    protected GPFolder rootFolderB;
+    protected long idRootFolderA = -1;
+    protected long idRootFolderB = -1;
+    protected long idAccountProject = -1;
 
     @Override
     public void setUp() throws Exception {
@@ -68,6 +85,26 @@ abstract class OAuth2CoreServiceTest extends OAuth2ServiceTest {
                 GPRole.USER);
         userTest = oauth2CoreClientConnector.getUserDetailByUsername(
                 new SearchRequest(usernameTest, LikePatternType.CONTENT_EQUALS));
+        // Insert Project
+        idProjectTest = this.createAndInsertProject("project_oauth2_test_rs",
+                false, 2, new Date(System.currentTimeMillis()));
+        projectTest = oauth2CoreClientConnector.getProjectDetail(idProjectTest);
+        // Insert the Account as the owner of Project
+        this.idAccountProject = this.createAndInsertAccountProject(userTest,
+                projectTest, BasePermission.ADMINISTRATION);
+
+        // Create root folders for the user
+        idRootFolderA = this.createAndInsertFolder(nameRootFolderA, projectTest,
+                2, null);
+        rootFolderA = oauth2CoreClientConnector.getFolderDetail(idRootFolderA);
+
+        idRootFolderB = this.createAndInsertFolder(nameRootFolderB, projectTest,
+                1, null);
+        rootFolderB = oauth2CoreClientConnector.getFolderDetail(idRootFolderB);
+
+        // Set the list of keywords (for raster layer)
+        layerInfoKeywords = new ArrayList<>();
+        layerInfoKeywords.add("keyword_test_rs");
     }
 
     @Override
@@ -75,6 +112,21 @@ abstract class OAuth2CoreServiceTest extends OAuth2ServiceTest {
         organizationTest = new GPOrganization(organizationNameRSTest);
         organizationTest.setId(oauth2CoreClientConnector.insertOrganization(
                 organizationTest));
+    }
+
+    @Override
+    public void tearDown() {
+        try {
+            if (idProjectTest != -1) {
+                Assert.assertEquals(Boolean.TRUE, oauth2CoreClientConnector
+                        .deleteProject(idProjectTest));
+            }
+        } catch (Exception ex) {
+            logger.error(
+                    "\n@@@@@@@@@@@@@@@@@ERROR@@@@@@@@@@@@@@@@@@@@@@@@ " + ex);
+        }
+
+        super.tearDown();
     }
 
 }

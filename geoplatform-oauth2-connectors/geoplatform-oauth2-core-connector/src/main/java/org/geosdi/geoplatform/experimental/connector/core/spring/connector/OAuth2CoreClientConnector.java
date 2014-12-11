@@ -178,7 +178,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         return client.resource(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/deleteAccount/"))
-                .path(String.valueOf(accountID))
+                .queryParam("accountID", String.valueOf(accountID))
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -426,15 +426,31 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     }
 
     @Override
-    public Long insertAccountProject(GPAccountProject accountProject) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Long insertAccountProject(GPAccountProject accountProject)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertAccountProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/insertAccountProject"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, accountProject);
     }
 
     @Override
-    public Long updateAccountProject(GPAccountProject accountProject) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Long updateAccountProject(GPAccountProject accountProject)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateAccountProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/updateAccountProject"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, accountProject);
     }
 
     @Override
@@ -443,9 +459,18 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     }
 
     @Override
-    public GPAccountProject getAccountProject(Long accountProjectID) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GPAccountProject getAccountProject(Long accountProjectID)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAccountProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getAccountProject/"))
+                .path(String.valueOf(accountProjectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPAccountProject.class);
     }
 
     @Override
@@ -457,19 +482,60 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     @Override
     public WSGetAccountProjectsResponse getAccountProjectsByProjectID(
             Long projectID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAccountProjectsByProjectID");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getAccountProjectsByProjectID/"))
+                .path(String.valueOf(String.valueOf(projectID)))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(WSGetAccountProjectsResponse.class);
     }
 
     @Override
     public GPAccountProject getAccountProjectByAccountAndProjectIDs(
             Long accountID, Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAccountProjectByAccountAndProjectIDs");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/"
+                        + "getAccountProjectByAccountAndProjectIDs/"))
+                .path(String.valueOf(String.valueOf(accountID)) + "/")
+                .path(String.valueOf(String.valueOf(projectID)))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPAccountProject.class);
     }
 
     @Override
     public Long getAccountProjectsCount(Long accountID, SearchRequest request)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAccountProjectsCount");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("accountID", String.valueOf(accountID));
+        if (request.getNameLike() != null) {
+            params.add("nameLike", request.getNameLike());
+        }
+        if (request.getLikeType() != null) {
+            params.add("likeType", request.getLikeType().toString());
+        }
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getAccountProjectsCount"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(Long.class);
     }
 
     @Override
@@ -486,23 +552,58 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public GPAccountProject getProjectOwner(Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getProjectOwner");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getProjectOwner/"))
+                .path(String.valueOf(String.valueOf(projectID)))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPAccountProject.class);
     }
 
     @Override
-    public Boolean setProjectOwner(RequestByAccountProjectIDs request) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Boolean setProjectOwner(RequestByAccountProjectIDs request)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "setProjectOwner");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/setProjectOwner"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, request);
     }
 
     @Override
     public GPProject getDefaultProject(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getDefaultProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/getDefaultProject/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPProject.class);
     }
 
     @Override
     public ProjectDTO getDefaultProjectDTO(Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getDefaultProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/getDefaultProjectDTO/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ProjectDTO.class);
     }
 
     @Override
@@ -513,63 +614,160 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public Boolean saveAccountProjectProperties(
-            AccountProjectPropertiesDTO accountProjectProperties) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+            AccountProjectPropertiesDTO accountProjectProperties)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "saveAccountProjectProperties");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/saveAccountProjectProperties"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, accountProjectProperties);
     }
 
     @Override
     public ShortAccountDTOContainer getAccountsByProjectID(Long projectID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAccountsByProjectID");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getAccountsByProject/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ShortAccountDTOContainer.class);
     }
 
     @Override
     public ShortAccountDTOContainer getAccountsToShareByProjectID(Long projectID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAccountsToShareByProjectID");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getAccountsToShare/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ShortAccountDTOContainer.class);
     }
 
     @Override
     public Boolean updateAccountsProjectSharing(
             PutAccountsProjectRequest apRequest) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateAccountsProjectSharing");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/"
+                        + "updateAccountsProjectSharing"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, apRequest);
     }
 
     @Override
     public Long saveProject(SaveProjectRequest saveProjectRequest) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "saveProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/saveProject"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, saveProjectRequest);
     }
 
     @Override
     public Long insertProject(GPProject project) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/insertProject"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, project);
     }
 
     @Override
     public Long updateProject(GPProject project) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/updateProject"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, project);
     }
 
     @Override
     public Boolean deleteProject(Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/deleteProject/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
     public GPProject getProjectDetail(Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getProjectDetail");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/getProjectDetail/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPProject.class);
     }
 
     @Override
     public Integer getNumberOfElementsProject(Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getNumberOfElementsProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/folders/getNumberOfElementsProject/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(Integer.class);
     }
 
     @Override
     public void setProjectShared(Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "setProjectShared");
+
+        client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/setProjectShared"))
+                .queryParam("projectID", String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put();
     }
 
     @Override
@@ -617,19 +815,44 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     }
 
     @Override
-    public Long insertFolder(InsertFolderRequest insertFolderRequest) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Long insertFolder(InsertFolderRequest insertFolderRequest)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertFolder");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/insertFolder"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, insertFolderRequest);
     }
 
     @Override
     public Long updateFolder(GPFolder folder) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateFolder");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/updateFolder"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, folder);
     }
 
     @Override
     public Boolean deleteFolder(Long folderID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteFolder");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/deleteFolder"))
+                .queryParam("folderID", String.valueOf(folderID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
@@ -666,7 +889,16 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public GPFolder getFolderDetail(Long folderID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getFolderDetail");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/getFolderDetail/"))
+                .path(String.valueOf(folderID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPFolder.class);
     }
 
     @Override
@@ -676,34 +908,89 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public TreeFolderElementsStore getChildrenElements(Long folderID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getChildrenElements");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/getChildrenElements/"))
+                .path(String.valueOf(folderID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(TreeFolderElementsStore.class);
     }
 
     @Override
     public ProjectDTO getProjectWithRootFolders(Long projectID, Long accountID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getProjectWithRootFolders");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/folders/getProjectWithRootFolders/"))
+                .path(String.valueOf(projectID) + "/")
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ProjectDTO.class);
     }
 
     @Override
     public ProjectDTO getProjectWithExpandedFolders(Long projectID,
             Long accountID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getProjectWithExpandedFolders");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/folders/getProjectWithExpandedFolders/"))
+                .path(String.valueOf(projectID) + "/")
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ProjectDTO.class);
     }
 
     @Override
     public ProjectDTO exportProject(Long projectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "exportProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/exportProject/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ProjectDTO.class);
     }
 
     @Override
     public Long importProject(ImportProjectRequest impRequest) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "importProject");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/importProject"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, impRequest);
     }
 
     @Override
     public Long insertLayer(InsertLayerRequest layerRequest) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertLayer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/insertLayer"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, layerRequest);
     }
 
     @Override
@@ -730,15 +1017,15 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public LongListStore saveAddedLayersAndTreeModifications(
-            WSAddLayersAndTreeModificationsRequest addLayersRequest) throws
-            Exception {
+            WSAddLayersAndTreeModificationsRequest addLayersRequest)
+            throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Boolean saveDeletedLayerAndTreeModifications(
-            WSDeleteLayerAndTreeModificationsRequest deleteLayerRequest) throws
-            Exception {
+            WSDeleteLayerAndTreeModificationsRequest deleteLayerRequest)
+            throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -762,12 +1049,30 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public GPRasterLayer getRasterLayer(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getRasterLayer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getRasterLayer/"))
+                .path(String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPRasterLayer.class);
     }
 
     @Override
     public GPVectorLayer getVectorLayer(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getVectorLayer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getVectorLayer/"))
+                .path(String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPVectorLayer.class);
     }
 
     @Override

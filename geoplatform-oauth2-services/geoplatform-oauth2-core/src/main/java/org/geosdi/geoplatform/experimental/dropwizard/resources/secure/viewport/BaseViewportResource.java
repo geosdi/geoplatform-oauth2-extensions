@@ -35,12 +35,12 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.viewport;
 
-import org.geosdi.geoplatform.core.delegate.api.viewport.ViewportDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPViewport;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.viewport.InsertViewportRequest;
 import org.geosdi.geoplatform.request.viewport.ManageViewportRequest;
 import org.geosdi.geoplatform.response.viewport.WSGetViewportResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -49,51 +49,51 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseViewportResource implements SecureViewportResource {
 
-    @Autowired
-    protected ViewportDelegate gpViewportDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public GPViewport getDefaultViewport(Long accountProjectID) throws Exception {
-        return this.gpViewportDelegate.getDefaultViewport(accountProjectID);
+        return this.gpSecureCoreDelegate.getDefaultViewport(accountProjectID);
     }
 
     @Override
     public WSGetViewportResponse getAccountProjectViewports(
             Long accountProjectID) throws Exception {
-        return this.gpViewportDelegate.getAccountProjectViewports(
+        return this.gpSecureCoreDelegate.getAccountProjectViewports(
                 accountProjectID);
     }
 
     @Override
     public Long insertViewport(InsertViewportRequest insertViewportReq) throws
             Exception {
-        return this.gpViewportDelegate.insertViewport(insertViewportReq);
+        return this.gpSecureCoreDelegate.insertViewport(insertViewportReq);
     }
 
     @Override
     public Long updateViewport(GPViewport viewport) throws Exception {
-        return this.gpViewportDelegate.updateViewport(viewport);
+        return this.gpSecureCoreDelegate.updateViewport(viewport);
     }
 
     @Override
     public GPViewport getViewportById(Long idViewport) throws Exception {
-        return this.gpViewportDelegate.getViewportById(idViewport);
+        return this.gpSecureCoreDelegate.getViewportById(idViewport);
     }
 
     @Override
     public Boolean deleteViewport(Long viewportID) throws Exception {
-        return this.gpViewportDelegate.deleteViewport(viewportID);
+        return this.gpSecureCoreDelegate.deleteViewport(viewportID);
     }
 
     @Override
     public void saveOrUpdateViewportList(ManageViewportRequest request)
             throws Exception {
-        this.gpViewportDelegate.saveOrUpdateViewportList(request);
+        this.gpSecureCoreDelegate.saveOrUpdateViewportList(request);
     }
 
     @Override
     public void replaceViewportList(ManageViewportRequest request)
             throws Exception {
-        this.gpViewportDelegate.replaceViewportList(request);
+        this.gpSecureCoreDelegate.replaceViewportList(request);
     }
 }

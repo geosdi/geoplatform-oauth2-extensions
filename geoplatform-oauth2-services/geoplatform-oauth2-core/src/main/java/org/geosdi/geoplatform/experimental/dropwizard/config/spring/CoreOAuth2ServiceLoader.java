@@ -46,6 +46,8 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @ImportResource(value = {"classpath*:applicationContext.xml"})
-@ComponentScan(value = {"org.geosdi.geoplatform.experimental.dropwizard.resources"})
+@ComponentScan(
+            value = {"org.geosdi.geoplatform.experimental.dropwizard.delegate",
+                "org.geosdi.geoplatform.experimental.dropwizard.resources"})
 public class CoreOAuth2ServiceLoader {
 }

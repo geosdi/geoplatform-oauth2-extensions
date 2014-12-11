@@ -36,11 +36,12 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.layer;
 
 import java.util.List;
-import org.geosdi.geoplatform.core.delegate.api.layer.LayerDelegate;
+import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPBBox;
 import org.geosdi.geoplatform.core.model.GPLayerInfo;
 import org.geosdi.geoplatform.core.model.GPRasterLayer;
 import org.geosdi.geoplatform.core.model.GPVectorLayer;
+import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.gui.shared.GPLayerType;
 import org.geosdi.geoplatform.request.layer.InsertLayerRequest;
 import org.geosdi.geoplatform.request.layer.WSAddLayerAndTreeModificationsRequest;
@@ -60,34 +61,34 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 abstract class BaseLayerResource implements SecureLayerResource {
     
-    @Autowired
-    protected LayerDelegate gpLayerDelegate;
+    @Resource(name = "gpSecureCoreDelegate")
+    protected SecureCoreDelegate gpSecureCoreDelegate;
 
     @Override
     public Long insertLayer(InsertLayerRequest layerRequest) throws Exception {
-        return this.gpLayerDelegate.insertLayer(layerRequest);
+        return this.gpSecureCoreDelegate.insertLayer(layerRequest);
     }
 
     @Override
     public Long updateRasterLayer(GPRasterLayer layer) throws Exception {
-        return this.gpLayerDelegate.updateRasterLayer(layer);
+        return this.gpSecureCoreDelegate.updateRasterLayer(layer);
     }
 
     @Override
     public Long updateVectorLayer(GPVectorLayer layer) throws Exception {
-        return this.gpLayerDelegate.updateVectorLayer(layer);
+        return this.gpSecureCoreDelegate.updateVectorLayer(layer);
     }
 
     @Override
     public Boolean deleteLayer(Long layerID) throws Exception {
-        return this.gpLayerDelegate.deleteLayer(layerID);
+        return this.gpSecureCoreDelegate.deleteLayer(layerID);
     }
 
     @Override
     public Long saveAddedLayerAndTreeModifications(
             WSAddLayerAndTreeModificationsRequest addLayerRequest)
             throws Exception {
-        return this.gpLayerDelegate.saveAddedLayerAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveAddedLayerAndTreeModifications(
                 addLayerRequest);
     }
 
@@ -95,7 +96,7 @@ abstract class BaseLayerResource implements SecureLayerResource {
     public LongListStore saveAddedLayersAndTreeModifications(
             WSAddLayersAndTreeModificationsRequest addLayersRequest)
             throws Exception {
-        return this.gpLayerDelegate.saveAddedLayersAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveAddedLayersAndTreeModifications(
                 addLayersRequest);
     }
 
@@ -103,68 +104,68 @@ abstract class BaseLayerResource implements SecureLayerResource {
     public Boolean saveDeletedLayerAndTreeModifications(
             WSDeleteLayerAndTreeModificationsRequest deleteLayerRequest)
             throws Exception {
-        return this.gpLayerDelegate.saveDeletedLayerAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveDeletedLayerAndTreeModifications(
                 deleteLayerRequest);
     }
 
     @Override
     public Boolean saveCheckStatusLayerAndTreeModifications(Long layerID,
             boolean checked) throws Exception {
-        return this.gpLayerDelegate.saveCheckStatusLayerAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveCheckStatusLayerAndTreeModifications(
                 layerID, checked);
     }
 
     @Override
     public Boolean saveDragAndDropLayerAndTreeModifications(
             WSDDLayerAndTreeModificationsRequest ddLayerReq) throws Exception {
-        return this.gpLayerDelegate.saveDragAndDropLayerAndTreeModifications(
+        return this.gpSecureCoreDelegate.saveDragAndDropLayerAndTreeModifications(
                 ddLayerReq);
     }
 
     @Override
     public Boolean saveLayerProperties(RasterPropertiesDTO layerProperties)
             throws Exception {
-        return this.gpLayerDelegate.saveLayerProperties(layerProperties);
+        return this.gpSecureCoreDelegate.saveLayerProperties(layerProperties);
     }
 
     @Override
     public GPRasterLayer getRasterLayer(Long layerID) throws Exception {
-        return this.gpLayerDelegate.getRasterLayer(layerID);
+        return this.gpSecureCoreDelegate.getRasterLayer(layerID);
     }
 
     @Override
     public GPVectorLayer getVectorLayer(Long layerID) throws Exception {
-        return this.gpLayerDelegate.getVectorLayer(layerID);
+        return this.gpSecureCoreDelegate.getVectorLayer(layerID);
     }
 
     @Override
     public ShortLayerDTO getShortLayer(Long layerID) throws Exception {
-        return this.gpLayerDelegate.getShortLayer(layerID);
+        return this.gpSecureCoreDelegate.getShortLayer(layerID);
     }
 
     @Override
     public List<ShortLayerDTO> getLayers(Long projectID) {
-        return this.gpLayerDelegate.getLayers(projectID);
+        return this.gpSecureCoreDelegate.getLayers(projectID);
     }
 
     @Override
     public GPBBox getBBox(Long layerID) throws Exception {
-        return this.gpLayerDelegate.getBBox(layerID);
+        return this.gpSecureCoreDelegate.getBBox(layerID);
     }
 
     @Override
     public GPLayerInfo getLayerInfo(Long layerID) throws Exception {
-        return this.gpLayerDelegate.getLayerInfo(layerID);
+        return this.gpSecureCoreDelegate.getLayerInfo(layerID);
     }
 
     @Override
     public GPLayerType getLayerType(Long layerID) throws Exception {
-        return this.gpLayerDelegate.getLayerType(layerID);
+        return this.gpSecureCoreDelegate.getLayerType(layerID);
     }
 
     @Override
     public GetDataSourceResponse getLayersDataSourceByProjectID(Long projectID)
             throws Exception {
-        return this.gpLayerDelegate.getLayersDataSourceByProjectID(projectID);
+        return this.gpSecureCoreDelegate.getLayersDataSourceByProjectID(projectID);
     }
 }

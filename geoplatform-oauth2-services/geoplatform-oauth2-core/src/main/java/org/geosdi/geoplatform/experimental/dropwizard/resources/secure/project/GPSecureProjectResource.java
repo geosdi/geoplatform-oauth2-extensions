@@ -49,6 +49,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPProject;
+import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
 import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
@@ -237,16 +238,29 @@ public class GPSecureProjectResource extends BaseProjectResource {
                 projectID);
     }
 
-    @GET
-    @Path(value = GPServiceRSPathConfig.GET_ACCOUNT_PROJECTS_COUNT_PATH)
     @Override
-    public Long getAccountProjectsCount(@Auth Principal principal,
+    public Long getAccountProjectsCount(Principal principal,
             @QueryParam(value = "accountID") Long accountID,
             @QueryParam("request") SearchRequest request) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
                 + "getAccountProjectsCount - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountProjectsCount(accountID, request);
+    }
+
+    @GET
+    @Path(value = GPServiceRSPathConfig.GET_ACCOUNT_PROJECTS_COUNT_PATH)
+    @Override
+    public Long getAccountProjectsCount(@Auth Principal principal,
+            @QueryParam(value = "accountID") Long accountID,
+            @QueryParam(value = "nameLike") String nameLike,
+            @QueryParam(value = "likeType") LikePatternType likeType)
+            throws Exception {
+        return getAccountProjectsCount(accountID, (nameLike != null)
+                ? (likeType != null)
+                        ? new SearchRequest(nameLike, likeType)
+                        : new SearchRequest(nameLike) : new SearchRequest()
+        );
     }
 
     @GET
@@ -284,6 +298,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
     }
 
     @PUT
+    @Path(value = GPServiceRSPathConfig.SET_PROJECT_OWNER_PATH)
     @Override
     public Boolean setProjectOwner(@Auth Principal principal,
             RequestByAccountProjectIDs request) throws Exception {

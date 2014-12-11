@@ -39,6 +39,7 @@ import java.security.Principal;
 import java.util.List;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPProject;
+import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
 import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
@@ -110,6 +111,9 @@ public interface SecureProjectResource extends GPProjectResource,
 
     Long getAccountProjectsCount(Principal principal, Long accountID,
             SearchRequest request) throws Exception;
+    
+    Long getAccountProjectsCount(Principal principal, Long accountID,
+            String nameLike, LikePatternType likeType) throws Exception;
 
     GPAccountProject getDefaultAccountProject(Principal principal,
             Long accountID) throws Exception;
