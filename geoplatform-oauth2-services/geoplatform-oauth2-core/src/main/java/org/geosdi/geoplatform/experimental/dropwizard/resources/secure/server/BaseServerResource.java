@@ -35,12 +35,12 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.server;
 
-import java.util.List;
 import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GeoPlatformServer;
 import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.response.ServerDTO;
+import org.geosdi.geoplatform.response.ServerDTOContainer;
 
 /**
  *
@@ -48,7 +48,7 @@ import org.geosdi.geoplatform.response.ServerDTO;
  * @email giuseppe.lascaleia@geosdi.org
  */
 abstract class BaseServerResource implements SecureServerResource {
-    
+
     @Resource(name = "gpSecureCoreDelegate")
     protected SecureCoreDelegate gpSecureCoreDelegate;
 
@@ -68,7 +68,7 @@ abstract class BaseServerResource implements SecureServerResource {
     }
 
     @Override
-    public List<ServerDTO> getAllServers(String organizazionName)
+    public ServerDTOContainer getAllServers(String organizazionName)
             throws Exception {
         return this.gpSecureCoreDelegate.getAllServers(organizazionName);
     }

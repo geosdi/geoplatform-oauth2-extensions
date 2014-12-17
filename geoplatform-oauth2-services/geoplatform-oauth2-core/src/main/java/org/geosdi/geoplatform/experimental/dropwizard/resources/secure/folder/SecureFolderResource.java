@@ -36,13 +36,13 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.folder;
 
 import java.security.Principal;
-import java.util.List;
 import org.geosdi.geoplatform.core.model.GPFolder;
 import org.geosdi.geoplatform.request.folder.InsertFolderRequest;
 import org.geosdi.geoplatform.request.folder.WSAddFolderAndTreeModificationsRequest;
 import org.geosdi.geoplatform.request.folder.WSDDFolderAndTreeModifications;
 import org.geosdi.geoplatform.request.folder.WSDeleteFolderAndTreeModifications;
 import org.geosdi.geoplatform.response.FolderDTO;
+import org.geosdi.geoplatform.response.collection.ChildrenFolderStore;
 import org.geosdi.geoplatform.response.collection.TreeFolderElementsStore;
 import org.geosdi.geoplatform.services.core.api.resources.GPFolderResource;
 
@@ -85,7 +85,7 @@ public interface SecureFolderResource extends GPFolderResource {
     GPFolder getFolderDetail(Principal principal, Long folderID)
             throws Exception;
 
-    List<FolderDTO> getChildrenFolders(Principal principal, Long folderID);
+    ChildrenFolderStore getChildrenFolders(Principal principal, Long folderID);
 
     TreeFolderElementsStore getChildrenElements(Principal principal,
             Long folderID);

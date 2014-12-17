@@ -36,10 +36,10 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.message;
 
 import java.security.Principal;
-import java.util.List;
 import org.geosdi.geoplatform.core.model.GPMessage;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
 import org.geosdi.geoplatform.response.MessageDTO;
+import org.geosdi.geoplatform.response.message.GetMessageResponse;
 import org.geosdi.geoplatform.services.core.api.resources.GPMessageResource;
 
 /**
@@ -59,10 +59,10 @@ public interface SecureMessageResource extends GPMessageResource {
     GPMessage getMessageDetail(Principal principal, Long messageID)
             throws Exception;
 
-    List<GPMessage> getAllMessagesByRecipient(Principal principal,
+    GetMessageResponse getAllMessagesByRecipient(Principal principal,
             Long recipientID) throws Exception;
 
-    List<GPMessage> getUnreadMessagesByRecipient(Principal principal,
+    GetMessageResponse getUnreadMessagesByRecipient(Principal principal,
             Long recipientID) throws Exception;
 
     Boolean markMessageAsRead(Principal principal, Long messageID)

@@ -37,7 +37,6 @@ package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.message;
 
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
-import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -49,6 +48,7 @@ import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.core.model.GPMessage;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
 import org.geosdi.geoplatform.response.MessageDTO;
+import org.geosdi.geoplatform.response.message.GetMessageResponse;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,8 @@ public class GPSecureMessageResource extends BaseMessageResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_ALL_MESSAGES_BY_RECIPIENT_PATH)
     @Override
-    public List<GPMessage> getAllMessagesByRecipient(@Auth Principal principal,
+    public GetMessageResponse getAllMessagesByRecipient(
+            @Auth Principal principal,
             @PathParam(value = "recipientID") Long recipientID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure getMessageDetail - "
                 + "Principal : {}\n\n", principal.getName());
@@ -120,7 +121,7 @@ public class GPSecureMessageResource extends BaseMessageResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_UNREAD_MESSAGES_BY_RECIPIENT_PATH)
     @Override
-    public List<GPMessage> getUnreadMessagesByRecipient(
+    public GetMessageResponse getUnreadMessagesByRecipient(
             @Auth Principal principal,
             @PathParam(value = "recipientID") Long recipientID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure "
@@ -154,7 +155,7 @@ public class GPSecureMessageResource extends BaseMessageResource {
     @Path(value = GPServiceRSPathConfig.MARK_MESSAGES_AS_READ_BY_DATE_PATH)
     @Override
     public Boolean markMessagesAsReadByDate(@Auth Principal principal,
-            MarkMessageReadByDateRequest markMessageAsReadByDateReq) 
+            MarkMessageReadByDateRequest markMessageAsReadByDateReq)
             throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure"
                 + " markMessagesAsReadByDate - Principal : {}\n\n",

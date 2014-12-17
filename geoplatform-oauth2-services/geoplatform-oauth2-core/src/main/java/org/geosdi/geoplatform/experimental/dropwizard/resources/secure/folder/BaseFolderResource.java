@@ -35,7 +35,6 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.folder;
 
-import java.util.List;
 import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPFolder;
 import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
@@ -44,8 +43,8 @@ import org.geosdi.geoplatform.request.folder.WSAddFolderAndTreeModificationsRequ
 import org.geosdi.geoplatform.request.folder.WSDDFolderAndTreeModifications;
 import org.geosdi.geoplatform.request.folder.WSDeleteFolderAndTreeModifications;
 import org.geosdi.geoplatform.response.FolderDTO;
+import org.geosdi.geoplatform.response.collection.ChildrenFolderStore;
 import org.geosdi.geoplatform.response.collection.TreeFolderElementsStore;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -115,7 +114,7 @@ abstract class BaseFolderResource implements SecureFolderResource {
     }
 
     @Override
-    public List<FolderDTO> getChildrenFolders(Long folderID) {
+    public ChildrenFolderStore getChildrenFolders(Long folderID) {
         return this.gpSecureCoreDelegate.getChildrenFolders(folderID);
     }
 

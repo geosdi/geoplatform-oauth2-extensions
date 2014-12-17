@@ -37,7 +37,6 @@ package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.layer;
 
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
-import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -60,6 +59,7 @@ import org.geosdi.geoplatform.request.layer.WSDeleteLayerAndTreeModificationsReq
 import org.geosdi.geoplatform.response.GetDataSourceResponse;
 import org.geosdi.geoplatform.response.RasterPropertiesDTO;
 import org.geosdi.geoplatform.response.ShortLayerDTO;
+import org.geosdi.geoplatform.response.ShortLayerDTOContainer;
 import org.geosdi.geoplatform.response.collection.LongListStore;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
@@ -162,7 +162,8 @@ public class GPSecureLayerResource extends BaseLayerResource {
     @Override
     public Boolean saveCheckStatusLayerAndTreeModifications(
             @Auth Principal principal,
-            Long layerID, boolean checked) throws Exception {
+            @QueryParam(value = "layerID") Long layerID,
+            @QueryParam(value = "checked") boolean checked) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@Executing secure "
                 + "saveCheckStatusLayerAndTreeModifications - Principal "
                 + ": {}\n\n", principal.getName());
@@ -224,7 +225,7 @@ public class GPSecureLayerResource extends BaseLayerResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_LAYERS_PATH)
     @Override
-    public List<ShortLayerDTO> getLayers(@Auth Principal principal,
+    public ShortLayerDTOContainer getLayers(@Auth Principal principal,
             @PathParam(value = "projectID") Long projectID) {
         logger.debug("\n\n@@@@@@@@@@@@@@@@Executing secure getLayers "
                 + "- Principal : {}\n\n", principal.getName());

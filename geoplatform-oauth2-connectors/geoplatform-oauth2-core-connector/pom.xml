@@ -40,6 +40,12 @@
             <version>${jersey-version}</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.geosdi</groupId>
+            <artifactId>geoplatform-initializer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
         <!-- =========================================================== -->
         <!-- =========================== SPRING ======================== -->
         <!-- =========================================================== -->

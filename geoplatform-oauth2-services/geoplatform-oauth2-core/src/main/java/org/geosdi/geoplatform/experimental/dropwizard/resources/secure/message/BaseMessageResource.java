@@ -35,12 +35,12 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.message;
 
-import java.util.List;
 import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPMessage;
 import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
 import org.geosdi.geoplatform.response.MessageDTO;
+import org.geosdi.geoplatform.response.message.GetMessageResponse;
 
 /**
  *
@@ -48,7 +48,7 @@ import org.geosdi.geoplatform.response.MessageDTO;
  * @email giuseppe.lascaleia@geosdi.org
  */
 abstract class BaseMessageResource implements SecureMessageResource {
-    
+
     @Resource(name = "gpSecureCoreDelegate")
     protected SecureCoreDelegate gpSecureCoreDelegate;
 
@@ -73,15 +73,16 @@ abstract class BaseMessageResource implements SecureMessageResource {
     }
 
     @Override
-    public List<GPMessage> getAllMessagesByRecipient(Long recipientID)
+    public GetMessageResponse getAllMessagesByRecipient(Long recipientID)
             throws Exception {
         return this.gpSecureCoreDelegate.getAllMessagesByRecipient(recipientID);
     }
 
     @Override
-    public List<GPMessage> getUnreadMessagesByRecipient(Long recipientID)
+    public GetMessageResponse getUnreadMessagesByRecipient(Long recipientID)
             throws Exception {
-        return this.gpSecureCoreDelegate.getUnreadMessagesByRecipient(recipientID);
+        return this.gpSecureCoreDelegate.getUnreadMessagesByRecipient(
+                recipientID);
     }
 
     @Override

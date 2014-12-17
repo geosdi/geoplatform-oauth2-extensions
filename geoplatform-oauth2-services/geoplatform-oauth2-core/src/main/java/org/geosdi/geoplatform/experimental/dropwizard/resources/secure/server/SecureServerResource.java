@@ -36,10 +36,10 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.server;
 
 import java.security.Principal;
-import java.util.List;
 import org.geosdi.geoplatform.core.model.GeoPlatformServer;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.response.ServerDTO;
+import org.geosdi.geoplatform.response.ServerDTOContainer;
 import org.geosdi.geoplatform.services.core.api.resources.GPServerResource;
 
 /**
@@ -56,8 +56,8 @@ public interface SecureServerResource extends GPServerResource {
 
     Boolean deleteServer(Principal principal, Long serverID) throws Exception;
 
-    List<ServerDTO> getAllServers(Principal principal, String organizazionName)
-            throws Exception;
+    ServerDTOContainer getAllServers(Principal principal,
+            String organizazionName) throws Exception;
 
     GeoPlatformServer getServerDetail(Principal principal, Long serverID)
             throws Exception;

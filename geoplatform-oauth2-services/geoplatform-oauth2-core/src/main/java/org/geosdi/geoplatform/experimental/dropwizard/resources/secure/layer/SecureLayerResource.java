@@ -36,7 +36,6 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.layer;
 
 import java.security.Principal;
-import java.util.List;
 import org.geosdi.geoplatform.core.model.GPBBox;
 import org.geosdi.geoplatform.core.model.GPLayerInfo;
 import org.geosdi.geoplatform.core.model.GPRasterLayer;
@@ -50,6 +49,7 @@ import org.geosdi.geoplatform.request.layer.WSDeleteLayerAndTreeModificationsReq
 import org.geosdi.geoplatform.response.GetDataSourceResponse;
 import org.geosdi.geoplatform.response.RasterPropertiesDTO;
 import org.geosdi.geoplatform.response.ShortLayerDTO;
+import org.geosdi.geoplatform.response.ShortLayerDTOContainer;
 import org.geosdi.geoplatform.response.collection.LongListStore;
 import org.geosdi.geoplatform.services.core.api.resources.GPLayerResource;
 
@@ -102,7 +102,7 @@ public interface SecureLayerResource extends GPLayerResource {
     ShortLayerDTO getShortLayer(Principal principal, Long layerID)
             throws Exception;
 
-    List<ShortLayerDTO> getLayers(Principal principal, Long projectID);
+    ShortLayerDTOContainer getLayers(Principal principal, Long projectID);
 
     GPBBox getBBox(Principal principal, Long layerID) throws Exception;
 

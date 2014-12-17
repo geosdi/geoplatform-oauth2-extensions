@@ -87,15 +87,19 @@ import org.geosdi.geoplatform.response.ProjectDTO;
 import org.geosdi.geoplatform.response.RasterPropertiesDTO;
 import org.geosdi.geoplatform.response.SearchUsersResponseWS;
 import org.geosdi.geoplatform.response.ServerDTO;
+import org.geosdi.geoplatform.response.ServerDTOContainer;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.ShortLayerDTO;
+import org.geosdi.geoplatform.response.ShortLayerDTOContainer;
 import org.geosdi.geoplatform.response.UserDTO;
 import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
 import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
+import org.geosdi.geoplatform.response.collection.ChildrenFolderStore;
 import org.geosdi.geoplatform.response.collection.GuiComponentsPermissionMapData;
 import org.geosdi.geoplatform.response.collection.LongListStore;
 import org.geosdi.geoplatform.response.collection.TreeFolderElementsStore;
+import org.geosdi.geoplatform.response.message.GetMessageResponse;
 import org.geosdi.geoplatform.response.role.WSGetRoleResponse;
 import org.geosdi.geoplatform.response.viewport.WSGetViewportResponse;
 import org.geosdi.geoplatform.services.core.api.GPCoreServiceApi;
@@ -476,7 +480,17 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     @Override
     public WSGetAccountProjectsResponse getAccountProjectsByAccountID(
             Long accountID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAccountProjectsByAccountID");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureProject/accountprojects/getAccountProjectsByAccountID/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(WSGetAccountProjectsResponse.class);
     }
 
     @Override
@@ -772,46 +786,115 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public GPViewport getDefaultViewport(Long accountProjectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getDefaultViewport");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/getDefaultViewport/"))
+                .path(String.valueOf(accountProjectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPViewport.class);
     }
 
     @Override
     public WSGetViewportResponse getAccountProjectViewports(
             Long accountProjectID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAccountProjectViewports");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/getAccountProjectViewports/"))
+                .path(String.valueOf(accountProjectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(WSGetViewportResponse.class);
     }
 
     @Override
-    public Long insertViewport(InsertViewportRequest insertViewportReq) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Long insertViewport(InsertViewportRequest insertViewportReq)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertViewport");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/insertViewport"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, insertViewportReq);
     }
 
     @Override
     public Long updateViewport(GPViewport viewport) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateViewport");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/updateViewport"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, viewport);
     }
 
     @Override
     public GPViewport getViewportById(Long idViewport) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getViewportById");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/getViewportById/"))
+                .queryParam("idViewport", String.valueOf(idViewport))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPViewport.class);
     }
 
     @Override
     public Boolean deleteViewport(Long viewportID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteViewport");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/deleteViewport"))
+                .queryParam("viewportID", String.valueOf(viewportID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
-    public void saveOrUpdateViewportList(ManageViewportRequest request) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void saveOrUpdateViewportList(ManageViewportRequest request)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "saveOrUpdateViewportList");
+
+        client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/saveOrUpdateViewportList"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(request);
     }
 
     @Override
     public void replaceViewportList(ManageViewportRequest request) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "replaceViewportList");
+
+        client.resource(super.getRestServiceURL()
+                .concat("jsonSecureViewport/viewports/replaceViewportList"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(request);
     }
 
     @Override
@@ -865,26 +948,62 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     public Long saveAddedFolderAndTreeModifications(
             WSAddFolderAndTreeModificationsRequest sftModificationRequest)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveAddedFolderAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/saveAddedFolderAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, sftModificationRequest);
     }
 
     @Override
     public Boolean saveDeletedFolderAndTreeModifications(
-            WSDeleteFolderAndTreeModifications sdfModificationRequest) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+            WSDeleteFolderAndTreeModifications sdfModificationRequest)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveDeletedFolderAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/saveDeletedFolderAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, sdfModificationRequest);
     }
 
     @Override
     public Boolean saveDragAndDropFolderAndTreeModifications(
-            WSDDFolderAndTreeModifications sddfTreeModificationRequest) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+            WSDDFolderAndTreeModifications sddfTreeModificationRequest)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveDragAndDropFolderAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/saveDragAndDropFolderAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, sddfTreeModificationRequest);
     }
 
     @Override
     public FolderDTO getShortFolder(Long folderID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getShortFolder");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/getShortFolder/"))
+                .path(String.valueOf(folderID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(FolderDTO.class);
     }
 
     @Override
@@ -902,8 +1021,17 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
     }
 
     @Override
-    public List<FolderDTO> getChildrenFolders(Long folderID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ChildrenFolderStore getChildrenFolders(Long folderID) {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getChildrenFolders");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureFolder/folders/getChildrenFolders/"))
+                .path(String.valueOf(folderID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ChildrenFolderStore.class);
     }
 
     @Override
@@ -995,7 +1123,15 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public Long updateRasterLayer(GPRasterLayer layer) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateRasterLayer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/updateRasterLayer"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, layer);
     }
 
     @Override
@@ -1005,40 +1141,99 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public Boolean deleteLayer(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteLayer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/deleteLayer"))
+                .queryParam("layerID", String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
     public Long saveAddedLayerAndTreeModifications(
-            WSAddLayerAndTreeModificationsRequest addLayerRequest) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+            WSAddLayerAndTreeModificationsRequest addLayerRequest)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveAddedLayerAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/saveAddedLayerAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, addLayerRequest);
     }
 
     @Override
     public LongListStore saveAddedLayersAndTreeModifications(
             WSAddLayersAndTreeModificationsRequest addLayersRequest)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveAddedLayersAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/addLayersAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(LongListStore.class, addLayersRequest);
     }
 
     @Override
     public Boolean saveDeletedLayerAndTreeModifications(
             WSDeleteLayerAndTreeModificationsRequest deleteLayerRequest)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveDeletedLayerAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/saveDeletedLayerAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, deleteLayerRequest);
     }
 
     @Override
     public Boolean saveCheckStatusLayerAndTreeModifications(Long layerID,
             boolean checked) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveCheckStatusLayerAndTreeModifications");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("layerID", String.valueOf(layerID));
+        params.add("checked", String.valueOf(checked));
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/saveCheckStatusLayerAndTreeModifications"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class);
     }
 
     @Override
     public Boolean saveDragAndDropLayerAndTreeModifications(
             WSDDLayerAndTreeModificationsRequest ddLayerReq) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "saveDragAndDropLayerAndTreeModifications");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/saveDragAndDropLayerAndTreeModifications"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, ddLayerReq);
     }
 
     @Override
@@ -1077,154 +1272,407 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
     @Override
     public ShortLayerDTO getShortLayer(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getShortLayer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getShortLayer/"))
+                .path(String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ShortLayerDTO.class);
     }
 
     @Override
-    public List<ShortLayerDTO> getLayers(Long projectID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ShortLayerDTOContainer getLayers(Long projectID) {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getLayers");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getLayers/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ShortLayerDTOContainer.class);
     }
 
     @Override
     public GPBBox getBBox(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getBBox");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getBBox/"))
+                .path(String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPBBox.class);
     }
 
     @Override
     public GPLayerInfo getLayerInfo(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getLayerInfo");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getLayerInfo/"))
+                .path(String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPLayerInfo.class);
     }
 
     @Override
     public GPLayerType getLayerType(Long layerID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getLayerType");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getLayerType/"))
+                .path(String.valueOf(layerID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPLayerType.class);
     }
 
     @Override
     public GetDataSourceResponse getLayersDataSourceByProjectID(Long projectID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getLayersDataSourceByProjectID");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureLayer/layers/getLayersDataSourceByProjectID/"))
+                .path(String.valueOf(projectID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GetDataSourceResponse.class);
     }
 
     @Override
     public WSGetRoleResponse getAllRoles(String organization) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAllRoles");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAcl/organizations/getAllRoles/"))
+                .path(organization)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(WSGetRoleResponse.class);
     }
 
     @Override
     public GuiComponentsPermissionMapData getAccountPermission(Long accountID)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAccountPermission");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAcl/organizations/getAccountPermission/"))
+                .path(String.valueOf(accountID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GuiComponentsPermissionMapData.class);
     }
 
     @Override
     public GuiComponentsPermissionMapData getRolePermission(String role,
             String organization) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getRolePermission");
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("role", role);
+        params.add("organization", organization);
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAcl/organizations/getRolePermission"))
+                .queryParams(params)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GuiComponentsPermissionMapData.class);
     }
 
     @Override
     public Boolean updateRolePermission(
             WSPutRolePermissionRequest putRolePermissionReq) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateRolePermission");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAcl/organizations/updateRolePermission"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, putRolePermissionReq);
     }
 
     @Override
     public Boolean saveRole(WSSaveRoleRequest saveRoleReq) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "saveRole");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureAcl/organizations/saveRole"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Boolean.class, saveRoleReq);
     }
 
     @Override
     public Long insertServer(GeoPlatformServer server) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertServer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/insertServer"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, server);
     }
 
     @Override
     public Long updateServer(GeoPlatformServer server) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "updateServer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/updateServer"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Long.class, server);
     }
 
     @Override
     public Boolean deleteServer(Long serverID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteServer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/deleteServer"))
+                .queryParam("serverID", String.valueOf(serverID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
-    public List<ServerDTO> getAllServers(String organizazionName) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ServerDTOContainer getAllServers(String organizazionName)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getAllServers");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/getAllServers/"))
+                .path(organizazionName)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ServerDTOContainer.class);
     }
 
     @Override
     public GeoPlatformServer getServerDetail(Long serverID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getServerDetail");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/getServerDetail/"))
+                .path(String.valueOf(serverID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GeoPlatformServer.class);
     }
 
     @Override
     public ServerDTO getShortServer(String serverUrl) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getShortServer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/getShortServer"))
+                .queryParam("serverUrl", serverUrl)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(ServerDTO.class);
     }
 
     @Override
-    public GeoPlatformServer getServerDetailByUrl(String serverUrl) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GeoPlatformServer getServerDetailByUrl(String serverUrl)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getServerDetailByUrl");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/getServerDetailByUrl"))
+                .queryParam("serverUrl", serverUrl)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GeoPlatformServer.class);
     }
 
     @Override
-    public ServerDTO saveServer(WSSaveServerRequest saveServerReq) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ServerDTO saveServer(WSSaveServerRequest saveServerReq)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "saveServer");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureServer/servers/saveServer"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(ServerDTO.class, saveServerReq);
     }
 
     @Override
     public Long insertMessage(GPMessage message) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertMessage");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/insertMessage"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Long.class, message);
     }
 
     @Override
     public Boolean insertMultiMessage(MessageDTO messageDTO) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "insertMultiMessage");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/insertMultiMessage"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Boolean.class, messageDTO);
     }
 
     @Override
     public Boolean deleteMessage(Long messageID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "deleteMessage");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/deleteMessage/"))
+                .path(String.valueOf(messageID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .delete(Boolean.class);
     }
 
     @Override
     public GPMessage getMessageDetail(Long messageID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "getMessageDetail");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/getMessageDetail/"))
+                .path(String.valueOf(messageID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GPMessage.class);
     }
 
     @Override
-    public List<GPMessage> getAllMessagesByRecipient(Long recipientID) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GetMessageResponse getAllMessagesByRecipient(Long recipientID)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getAllMessagesByRecipient");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/getAllMessagesByRecipient/"))
+                .path(String.valueOf(recipientID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GetMessageResponse.class);
     }
 
     @Override
-    public List<GPMessage> getUnreadMessagesByRecipient(Long recipientID) throws
-            Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GetMessageResponse getUnreadMessagesByRecipient(Long recipientID)
+            throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "getUnreadMessagesByRecipient");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/getUnreadMessagesByRecipient/"))
+                .path(String.valueOf(recipientID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .get(GetMessageResponse.class);
     }
 
     @Override
     public Boolean markMessageAsRead(Long messageID) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "markMessageAsRead");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/markMessageAsRead/"))
+                .path(String.valueOf(messageID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class);
     }
 
     @Override
     public Boolean markAllMessagesAsReadByRecipient(Long recipientID) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "markAllMessagesAsReadByRecipient");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/markAllMessagesAsReadByRecipient/"))
+                .path(String.valueOf(recipientID))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class);
     }
 
     @Override
     public Boolean markMessagesAsReadByDate(
             MarkMessageReadByDateRequest markMessageAsReadByDateReq) throws
             Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken,
+                "markMessagesAsReadByDate");
+
+        return client.resource(super.getRestServiceURL()
+                .concat("jsonSecureMessage/messages/markMessagesAsReadByDate"))
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .put(Boolean.class, markMessageAsReadByDateReq);
     }
 
     @Override

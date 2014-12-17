@@ -37,7 +37,6 @@ package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.folder;
 
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
-import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -53,6 +52,7 @@ import org.geosdi.geoplatform.request.folder.WSAddFolderAndTreeModificationsRequ
 import org.geosdi.geoplatform.request.folder.WSDDFolderAndTreeModifications;
 import org.geosdi.geoplatform.request.folder.WSDeleteFolderAndTreeModifications;
 import org.geosdi.geoplatform.response.FolderDTO;
+import org.geosdi.geoplatform.response.collection.ChildrenFolderStore;
 import org.geosdi.geoplatform.response.collection.TreeFolderElementsStore;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
@@ -180,7 +180,7 @@ public class GPSecureFolderResource extends BaseFolderResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_CHILDREN_FOLDERS_PATH)
     @Override
-    public List<FolderDTO> getChildrenFolders(@Auth Principal principal,
+    public ChildrenFolderStore getChildrenFolders(@Auth Principal principal,
             @PathParam(value = "folderID") Long folderID) {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure getChildrenFolders "
                 + "- Principal : {}\n\n", principal.getName());

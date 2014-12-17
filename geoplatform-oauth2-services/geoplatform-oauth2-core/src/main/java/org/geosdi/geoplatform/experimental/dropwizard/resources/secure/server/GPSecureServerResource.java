@@ -37,7 +37,6 @@ package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.server;
 
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
-import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -50,6 +49,7 @@ import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.core.model.GeoPlatformServer;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.response.ServerDTO;
+import org.geosdi.geoplatform.response.ServerDTOContainer;
 import org.geosdi.geoplatform.services.rs.path.GPServiceRSPathConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +100,7 @@ public class GPSecureServerResource extends BaseServerResource {
     @GET
     @Path(value = GPServiceRSPathConfig.GET_ALL_SERVERS_PATH)
     @Override
-    public List<ServerDTO> getAllServers(@Auth Principal principal,
+    public ServerDTOContainer getAllServers(@Auth Principal principal,
             @PathParam(value = "organizazionName") String organizazionName)
             throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure getAllServers - "

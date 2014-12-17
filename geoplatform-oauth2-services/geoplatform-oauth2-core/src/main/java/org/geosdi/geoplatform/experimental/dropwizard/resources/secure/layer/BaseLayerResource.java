@@ -35,7 +35,6 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.layer;
 
-import java.util.List;
 import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPBBox;
 import org.geosdi.geoplatform.core.model.GPLayerInfo;
@@ -51,8 +50,8 @@ import org.geosdi.geoplatform.request.layer.WSDeleteLayerAndTreeModificationsReq
 import org.geosdi.geoplatform.response.GetDataSourceResponse;
 import org.geosdi.geoplatform.response.RasterPropertiesDTO;
 import org.geosdi.geoplatform.response.ShortLayerDTO;
+import org.geosdi.geoplatform.response.ShortLayerDTOContainer;
 import org.geosdi.geoplatform.response.collection.LongListStore;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -144,7 +143,7 @@ abstract class BaseLayerResource implements SecureLayerResource {
     }
 
     @Override
-    public List<ShortLayerDTO> getLayers(Long projectID) {
+    public ShortLayerDTOContainer getLayers(Long projectID) {
         return this.gpSecureCoreDelegate.getLayers(projectID);
     }
 
