@@ -53,7 +53,7 @@ public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
     }
 
     private static ObjectMapper createMapper() {
-        return new OAuth2JacksonProvider().getDefaultMapper();
+        return new OAuth2JacksonProvider().getConfiguredMapper();
     }
 
     @Override

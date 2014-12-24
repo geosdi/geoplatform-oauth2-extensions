@@ -33,13 +33,19 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.connector.core.spring.connector.provider;
+package org.geosdi.geoplatform.experimental.dropwizard.auth.provider;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import static com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider.BASIC_ANNOTATIONS;
 import javax.ws.rs.ext.Provider;
 import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
+import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.ACCEPT_SINGLE_VALUE_AS_ARRAY_ENABLE;
+import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.FAIL_ON_UNKNOW_PROPERTIES_DISABLE;
+import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.INDENT_OUTPUT_ENABLE;
+import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.UNWRAP_ROOT_VALUE_DISABLE;
+import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.WRAP_ROOT_VALUE_ENABLE;
 
 /**
  *
@@ -47,20 +53,20 @@ import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @Provider
-public class CoreJacksonProvider extends JacksonJaxbJsonProvider {
+abstract class BaseOAuth2JacksonProvider extends JacksonJaxbJsonProvider {
 
-    private final GPJacksonSupport jacksonSupport = new GPJacksonSupport();
-
-    public CoreJacksonProvider() {
-        _mapperConfig.setMapper(jacksonSupport.getDefaultMapper());
+    protected BaseOAuth2JacksonProvider() {
+        super(new GPJacksonSupport(UNWRAP_ROOT_VALUE_DISABLE,
+                FAIL_ON_UNKNOW_PROPERTIES_DISABLE,
+                ACCEPT_SINGLE_VALUE_AS_ARRAY_ENABLE,
+                WRAP_ROOT_VALUE_ENABLE,
+                INDENT_OUTPUT_ENABLE).getDefaultMapper(), BASIC_ANNOTATIONS);
     }
 
-    public final void registerModule(Module module) {
-        _mapperConfig.getDefaultMapper().registerModule(module);
-    }
+    abstract void registerModule(Module module);
 
-    public final ObjectMapper getDefaultMapper() {
-        return _mapperConfig.getDefaultMapper();
-    }
+    abstract ObjectMapper getDefaultMapper();
+
+    abstract ObjectMapper getConfiguredMapper();
 
 }

@@ -35,11 +35,7 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.auth.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.Serializable;
@@ -48,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -56,16 +53,12 @@ import org.springframework.util.CollectionUtils;
  * @email giuseppe.lascaleia@geosdi.org
  */
 public class GPAuthenticatedPrincipal implements Serializable, Principal {
-    
+
     private static final long serialVersionUID = 116137119912701030L;
-    
+
     @JsonIgnore
-    private final static ObjectMapper mapper = new ObjectMapper()
-            .enable(DeserializationFeature.UNWRAP_ROOT_VALUE)
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-    
+    private final static ObjectMapper mapper = new GPJacksonSupport().getDefaultMapper();
+
     private String name;
     private Collection<String> roles;
     private Collection<String> groups;
@@ -75,29 +68,29 @@ public class GPAuthenticatedPrincipal implements Serializable, Principal {
      * need to be able to persist the Principal generically
      */
     private Map<String, String> attributes;
-    
+
     public GPAuthenticatedPrincipal() {
         super();
     }
-    
+
     public GPAuthenticatedPrincipal(String username) {
         this(username, new ArrayList<String>());
     }
-    
+
     public GPAuthenticatedPrincipal(String username, Collection<String> roles) {
         this(username, roles, new HashMap<String, String>());
     }
-    
+
     public GPAuthenticatedPrincipal(String username, Collection<String> roles,
             Map<String, String> attributes) {
         this(username, roles, attributes, new ArrayList<String>());
     }
-    
+
     public GPAuthenticatedPrincipal(String username, Collection<String> roles,
             Map<String, String> attributes, Collection<String> groups) {
         this(username, roles, attributes, groups, false);
     }
-    
+
     public GPAuthenticatedPrincipal(String username, Collection<String> roles,
             Map<String, String> attributes, Collection<String> groups,
             boolean adminPrincipal) {
@@ -132,14 +125,14 @@ public class GPAuthenticatedPrincipal implements Serializable, Principal {
     public String getAttribute(String key) {
         return (attributes != null) ? attributes.get(key) : null;
     }
-    
+
     public void addAttribute(String key, String value) {
         if (attributes == null) {
             attributes = new HashMap<>();
         }
         attributes.put(key, value);
     }
-    
+
     public void addGroup(String name) {
         if (groups == null) {
             groups = new ArrayList<>();
@@ -156,7 +149,7 @@ public class GPAuthenticatedPrincipal implements Serializable, Principal {
     public String getName() {
         return name;
     }
-    
+
     @JsonIgnore
     public String getDisplayName() {
         return name;
@@ -182,35 +175,35 @@ public class GPAuthenticatedPrincipal implements Serializable, Principal {
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
-    
+
     public Collection<String> getGroups() {
         return groups;
     }
-    
+
     public void setGroups(Collection<String> groups) {
         this.groups = groups;
     }
-    
+
     @JsonIgnore
     public boolean isGroupAware() {
         return !CollectionUtils.isEmpty(groups);
     }
-    
+
     public boolean isAdminPrincipal() {
         return adminPrincipal;
     }
-    
+
     public void setAdminPrincipal(boolean adminPrincipal) {
         this.adminPrincipal = adminPrincipal;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getName() + " {" + "name = " + name
                 + ", roles = " + roles + ", groups = " + groups
                 + ", attributes = " + attributes + '}';
     }
-    
+
     @JsonIgnore
     public String serialize() {
         try {
@@ -220,7 +213,7 @@ public class GPAuthenticatedPrincipal implements Serializable, Principal {
                     "Unable to serialize Principal:" + toString(), e);
         }
     }
-    
+
     @JsonIgnore
     public static GPAuthenticatedPrincipal deserialize(String json) {
         try {
@@ -230,5 +223,5 @@ public class GPAuthenticatedPrincipal implements Serializable, Principal {
                     e);
         }
     }
-    
+
 }

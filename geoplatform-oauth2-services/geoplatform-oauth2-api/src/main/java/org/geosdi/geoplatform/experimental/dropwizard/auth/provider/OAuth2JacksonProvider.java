@@ -37,29 +37,27 @@ package org.geosdi.geoplatform.experimental.dropwizard.auth.provider;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import javax.ws.rs.ext.Provider;
-import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@Provider
-public class OAuth2JacksonProvider extends JacksonJaxbJsonProvider {
+public class OAuth2JacksonProvider extends BaseOAuth2JacksonProvider {
 
-    private final GPJacksonSupport jacksonSupport = new GPJacksonSupport();
-
-    public OAuth2JacksonProvider() {
-        _mapperConfig.setMapper(jacksonSupport.getDefaultMapper());
-    }
-
+    @Override
     public final void registerModule(Module module) {
         _mapperConfig.getDefaultMapper().registerModule(module);
     }
 
+    @Override
     public final ObjectMapper getDefaultMapper() {
         return _mapperConfig.getDefaultMapper();
     }
+
+    @Override
+    public ObjectMapper getConfiguredMapper() {
+        return _mapperConfig.getConfiguredMapper();
+    }
+
 }

@@ -33,35 +33,30 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.experimental.connector.core.spring.connector;
+package org.geosdi.geoplatform.experimental.connector.api.provider;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import org.geosdi.geoplatform.experimental.connector.api.auth.token.OAuth2TokenBuilder;
-import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
-import org.geosdi.geoplatform.experimental.connector.core.spring.connector.provider.CoreConnectorProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import static com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider.BASIC_ANNOTATIONS;
+import javax.ws.rs.ext.Provider;
+import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@Configuration
-class OAuth2CoreClientConnectorConfig {
+@Provider
+public abstract class BaseConnectorProvider extends JacksonJaxbJsonProvider {
 
-    @Bean(name = "oauth2CoreClientConnector")
-    public OAuth2CoreClientConnector createCoreClientConnector(@Qualifier(
-            value = "oauth2CoreTokenBuilder") OAuth2TokenBuilder oauth2CoreTokenBuilder,
-            @Qualifier(value = "coreClientSettings") ConnectorClientSettings coreClientSettings) {
-
-        return new OAuth2CoreClientConnector(coreClientSettings, createClient(),
-                oauth2CoreTokenBuilder);
+    protected BaseConnectorProvider() {
+        super(new GPJacksonSupport().getDefaultMapper(), BASIC_ANNOTATIONS);
     }
 
-    Client createClient() {
-        return Client.create(new DefaultClientConfig(CoreConnectorProvider.class));
-    }
+    public abstract void registerModule(Module module);
+
+    public abstract ObjectMapper getDefaultMapper();
+
+    public abstract ObjectMapper getConfiguredMapper();
 }
