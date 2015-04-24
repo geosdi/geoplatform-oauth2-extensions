@@ -37,9 +37,9 @@ package org.geosdi.geoplatform.experimental.dropwizard.auth.authorize;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
-import com.sun.jersey.api.client.Client;
 import io.dropwizard.auth.AuthenticationException;
 import java.io.IOException;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.codec.binary.Base64;
@@ -94,10 +94,13 @@ public abstract class BaseOAuth2Authenticator implements GPOAuth2Authenticator {
     @Override
     public Optional<GPAuthenticatedPrincipal> authenticate(String token)
             throws AuthenticationException {
-        String json = client.resource(String.format(
+        String json = client.target(String.format(
                 authorizationServerUrl.concat(ACCESS_TOKEN_KEY), token))
-                .header(HttpHeaders.AUTHORIZATION, authorizationValue).accept(
+                .request(MediaType.APPLICATION_JSON).header(
+                        HttpHeaders.AUTHORIZATION,
+                        authorizationValue).accept(
                         MediaType.APPLICATION_JSON).get(String.class);
+
         final VerifyTokenResponse response;
         try {
             response = mapper.readValue(json, VerifyTokenResponse.class);

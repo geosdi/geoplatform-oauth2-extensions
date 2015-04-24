@@ -35,11 +35,12 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core.spring.connector;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import java.util.List;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPBBox;
@@ -58,6 +59,7 @@ import org.geosdi.geoplatform.experimental.connector.api.connector.AbstractClien
 import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
 import org.geosdi.geoplatform.gui.shared.GPLayerType;
 import org.geosdi.geoplatform.request.InsertAccountRequest;
+import org.geosdi.geoplatform.request.LikePatternType;
 import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
 import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
@@ -126,11 +128,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertOrganization");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureOrganization/organizations/insertOrganization"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, organization);
+                .post(Entity.entity(organization, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -139,9 +143,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteOrganization");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureOrganization/organizations/deleteOrganization/"))
                 .path(String.valueOf(organizationID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -154,11 +159,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertAccount");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/insertAccount"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, insertAccountRequest);
+                .post(Entity.entity(insertAccountRequest,
+                                MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -167,11 +174,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateUser");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/updateUser"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, user);
+                .post(Entity.entity(user, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -180,9 +189,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteAccount");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/deleteAccount/"))
                 .queryParam("accountID", String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -194,9 +204,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getUserDetail");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getUserDetail/"))
                 .path(String.valueOf(userID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPUser.class);
@@ -209,16 +220,14 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getUserDetailByUsername");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("nameLike", request.getNameLike());
-        if (request.getLikeType() != null) {
-            params.add("likeType", request.getLikeType().toString());
-        }
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getUserDetail/"
                         + "getUserDetailByUsername"))
-                .queryParams(params)
+                .queryParam("nameLike", request.getNameLike())
+                .queryParam("likeType", (request.getLikeType() != null)
+                                ? request.getLikeType()
+                                : LikePatternType.CONTAINS)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPUser.class);
@@ -232,11 +241,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getUserDetailByUsernameAndPassword");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getUserDetail/"
                         + "getUserDetailByUsernameAndPassword"))
                 .queryParam("username", username)
                 .queryParam("plainPassword", plainPassword)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPUser.class);
@@ -248,9 +258,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getShortUser");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getShortUser/"))
                 .path(String.valueOf(userID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(UserDTO.class);
@@ -263,15 +274,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getShortUserByUsername");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("nameLike", request.getNameLike());
-        if (request.getLikeType() != null) {
-            params.add("likeType", request.getLikeType().name());
-        }
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getShortUserByUsername"))
-                .queryParams(params)
+                .queryParam("nameLike", request.getNameLike())
+                .queryParam("likeType", (request.getLikeType() != null)
+                                ? request.getLikeType()
+                                : LikePatternType.CONTAINS)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(UserDTO.class);
@@ -285,17 +294,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "searchUsers");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("userID", String.valueOf(userID));
-        params.add("num", String.valueOf(request.getNum()));
-        params.add("page", String.valueOf(request.getPage()));
-        if (request.getNameLike() != null) {
-            params.add("nameLike", request.getNameLike());
-        }
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/searchUsers"))
-                .queryParams(params)
+                .queryParam("userID", String.valueOf(userID))
+                .queryParam("num", String.valueOf(request.getNum()))
+                .queryParam("page", String.valueOf(request.getPage()))
+                .queryParam("nameLike", request.getNameLike())
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(SearchUsersResponseWS.class);
@@ -307,12 +312,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAllAccounts");
 
-        return client.resource(super.getRestServiceURL().concat(
+        return client.target(super.getRestServiceURL().concat(
                 "jsonSecureAccount/accounts/getAllAccounts"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).get(
-                        ShortAccountDTOContainer.class);
+                .get(ShortAccountDTOContainer.class);
     }
 
     @Override
@@ -322,13 +327,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAccounts");
 
-        return client.resource(super.getRestServiceURL().concat(
+        return client.target(super.getRestServiceURL().concat(
                 "jsonSecureAccount/accounts/getAllOrganizationAccount/"))
                 .path(organization)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).get(
-                        ShortAccountDTOContainer.class);
+                .get(ShortAccountDTOContainer.class);
     }
 
     @Override
@@ -337,16 +342,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAccountsCount");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("nameLike", request.getNameLike());
-        if (request.getLikeType() != null) {
-            params.add("likeType", request.getLikeType().name());
-        }
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getAccountsCount"))
-                .queryParams(params)
-                .type(MediaType.APPLICATION_FORM_URLENCODED)
+                .queryParam("nameLike", request.getNameLike())
+                .queryParam("likeType", (request.getLikeType() != null)
+                                ? request.getLikeType()
+                                : LikePatternType.CONTAINS)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(Long.class);
@@ -358,15 +360,11 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getUsersCount");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("organization", organization);
-        if (request.getNameLike() != null) {
-            params.add("nameLike", request.getNameLike());
-        }
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/accounts/getUsersCount"))
-                .queryParams(params)
+                .queryParam("organization", organization)
+                .queryParam("nameLike", request.getNameLike())
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(Long.class);
@@ -378,9 +376,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAuthorities");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/authorities/getAuthorities/"))
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GetAuthorityResponse.class);
@@ -393,9 +392,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAuthoritiesDetail");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAccount/authorities/getAuthoritiesByAccountNaturalID/"))
                 .path(String.valueOf(accountNaturalID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GetAuthoritiesResponseWS.class);
@@ -407,12 +407,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "forceTemporaryAccount");
 
-        client.resource(super.getRestServiceURL()
-                .concat("jsonSecureAccount/accounts/forceTemporaryAccount/"))
-                .path(String.valueOf(accountID))
+        client.target(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/forceTemporaryAccount"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put();
+                .put(Entity.entity(accountID, MediaType.APPLICATION_JSON));
     }
 
     @Override
@@ -421,12 +421,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "forceExpiredTemporaryAccount");
 
-        client.resource(super.getRestServiceURL()
-                .concat("jsonSecureAccount/accounts/forceExpiredTemporaryAccount/"))
-                .path(String.valueOf(accountID))
+        client.target(super.getRestServiceURL()
+                .concat("jsonSecureAccount/accounts/forceExpiredTemporaryAccount"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put();
+                .put(Entity.entity(accountID, MediaType.APPLICATION_JSON));
     }
 
     @Override
@@ -436,11 +436,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertAccountProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/insertAccountProject"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, accountProject);
+                .post(Entity.entity(accountProject, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -450,11 +452,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateAccountProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/updateAccountProject"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, accountProject);
+                .put(Entity.entity(accountProject, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -469,9 +473,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAccountProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getAccountProject/"))
                 .path(String.valueOf(accountProjectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPAccountProject.class);
@@ -485,9 +490,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAccountProjectsByAccountID");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getAccountProjectsByAccountID/"))
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(WSGetAccountProjectsResponse.class);
@@ -501,9 +507,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAccountProjectsByProjectID");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getAccountProjectsByProjectID/"))
                 .path(String.valueOf(String.valueOf(projectID)))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(WSGetAccountProjectsResponse.class);
@@ -517,11 +524,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAccountProjectByAccountAndProjectIDs");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/"
                         + "getAccountProjectByAccountAndProjectIDs/"))
                 .path(String.valueOf(String.valueOf(accountID)) + "/")
                 .path(String.valueOf(String.valueOf(projectID)))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPAccountProject.class);
@@ -535,18 +543,14 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAccountProjectsCount");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("accountID", String.valueOf(accountID));
-        if (request.getNameLike() != null) {
-            params.add("nameLike", request.getNameLike());
-        }
-        if (request.getLikeType() != null) {
-            params.add("likeType", request.getLikeType().toString());
-        }
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getAccountProjectsCount"))
-                .queryParams(params)
+                .queryParam("accountID", String.valueOf(accountID))
+                .queryParam("nameLike", request.getNameLike())
+                .queryParam("likeType", (request.getLikeType() != null)
+                                ? request.getNameLike()
+                                : LikePatternType.CONTAINS)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(Long.class);
@@ -570,9 +574,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getProjectOwner");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getProjectOwner/"))
                 .path(String.valueOf(String.valueOf(projectID)))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPAccountProject.class);
@@ -585,11 +590,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "setProjectOwner");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/setProjectOwner"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, request);
+                .put(Entity.entity(request, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -598,9 +605,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getDefaultProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/getDefaultProject/"))
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPProject.class);
@@ -612,9 +620,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getDefaultProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/getDefaultProjectDTO/"))
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ProjectDTO.class);
@@ -634,11 +643,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "saveAccountProjectProperties");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/saveAccountProjectProperties"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, accountProjectProperties);
+                .put(Entity.entity(accountProjectProperties,
+                                MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -648,9 +659,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAccountsByProjectID");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getAccountsByProject/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ShortAccountDTOContainer.class);
@@ -664,9 +676,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAccountsToShareByProjectID");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/getAccountsToShare/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ShortAccountDTOContainer.class);
@@ -679,12 +692,14 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateAccountsProjectSharing");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/accountprojects/"
                         + "updateAccountsProjectSharing"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, apRequest);
+                .put(Entity.entity(apRequest, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -694,11 +709,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "saveProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/saveProject"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, saveProjectRequest);
+                .post(Entity.entity(saveProjectRequest,
+                                MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -707,11 +724,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/insertProject"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, project);
+                .post(Entity.entity(project, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -720,11 +739,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/updateProject"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, project);
+                .put(Entity.entity(project, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -733,9 +754,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/deleteProject/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -747,9 +769,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getProjectDetail");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/getProjectDetail/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPProject.class);
@@ -762,9 +785,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getNumberOfElementsProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/folders/getNumberOfElementsProject/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(Integer.class);
@@ -776,12 +800,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "setProjectShared");
 
-        client.resource(super.getRestServiceURL()
+        client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/setProjectShared"))
-                .queryParam("projectID", String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put();
+                .put(Entity.entity(projectID, MediaType.APPLICATION_JSON));
     }
 
     @Override
@@ -790,9 +814,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getDefaultViewport");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/getDefaultViewport/"))
                 .path(String.valueOf(accountProjectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPViewport.class);
@@ -806,9 +831,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAccountProjectViewports");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/getAccountProjectViewports/"))
                 .path(String.valueOf(accountProjectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(WSGetViewportResponse.class);
@@ -821,11 +847,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertViewport");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/insertViewport"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, insertViewportReq);
+                .post(Entity.entity(insertViewportReq,
+                                MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -834,11 +862,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateViewport");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/updateViewport"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, viewport);
+                .put(Entity.entity(viewport, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -847,9 +877,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getViewportById");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/getViewportById/"))
                 .queryParam("idViewport", String.valueOf(idViewport))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPViewport.class);
@@ -861,9 +892,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteViewport");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/deleteViewport"))
                 .queryParam("viewportID", String.valueOf(viewportID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -876,11 +908,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "saveOrUpdateViewportList");
 
-        client.resource(super.getRestServiceURL()
+        client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/saveOrUpdateViewportList"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(request);
+                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
 
     @Override
@@ -890,11 +923,12 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "replaceViewportList");
 
-        client.resource(super.getRestServiceURL()
+        client.target(super.getRestServiceURL()
                 .concat("jsonSecureViewport/viewports/replaceViewportList"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(request);
+                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
 
     @Override
@@ -904,11 +938,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertFolder");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/insertFolder"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, insertFolderRequest);
+                .post(Entity.entity(insertFolderRequest,
+                                MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -917,11 +953,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateFolder");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/updateFolder"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, folder);
+                .put(Entity.entity(folder, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -930,9 +968,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteFolder");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/deleteFolder"))
                 .queryParam("folderID", String.valueOf(folderID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -953,11 +992,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveAddedFolderAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/saveAddedFolderAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, sftModificationRequest);
+                .put(Entity.entity(sftModificationRequest,
+                                MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -969,11 +1010,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveDeletedFolderAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/saveDeletedFolderAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, sdfModificationRequest);
+                .put(Entity.entity(sdfModificationRequest,
+                                MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -985,11 +1028,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveDragAndDropFolderAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/saveDragAndDropFolderAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, sddfTreeModificationRequest);
+                .put(Entity.entity(sddfTreeModificationRequest,
+                                MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -998,9 +1043,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getShortFolder");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/getShortFolder/"))
                 .path(String.valueOf(folderID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(FolderDTO.class);
@@ -1012,9 +1058,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getFolderDetail");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/getFolderDetail/"))
                 .path(String.valueOf(folderID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPFolder.class);
@@ -1026,9 +1073,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getChildrenFolders");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/getChildrenFolders/"))
                 .path(String.valueOf(folderID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ChildrenFolderStore.class);
@@ -1040,9 +1088,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getChildrenElements");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureFolder/folders/getChildrenElements/"))
                 .path(String.valueOf(folderID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(TreeFolderElementsStore.class);
@@ -1055,10 +1104,11 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getProjectWithRootFolders");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/folders/getProjectWithRootFolders/"))
                 .path(String.valueOf(projectID) + "/")
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ProjectDTO.class);
@@ -1072,10 +1122,11 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getProjectWithExpandedFolders");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/folders/getProjectWithExpandedFolders/"))
                 .path(String.valueOf(projectID) + "/")
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ProjectDTO.class);
@@ -1087,9 +1138,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "exportProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/exportProject/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ProjectDTO.class);
@@ -1101,11 +1153,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "importProject");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureProject/projects/importProject"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, impRequest);
+                .post(Entity.entity(impRequest, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1114,11 +1168,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertLayer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/insertLayer"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, layerRequest);
+                .post(Entity.entity(layerRequest, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1127,11 +1183,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateRasterLayer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/updateRasterLayer"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, layer);
+                .put(Entity.entity(layer, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1145,9 +1203,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteLayer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/deleteLayer"))
                 .queryParam("layerID", String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -1162,11 +1221,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveAddedLayerAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/saveAddedLayerAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, addLayerRequest);
+                .post(Entity.entity(addLayerRequest, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1178,11 +1239,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveAddedLayersAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/addLayersAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(LongListStore.class, addLayersRequest);
+                .post(Entity.entity(addLayersRequest, MediaType.APPLICATION_JSON),
+                        LongListStore.class);
     }
 
     @Override
@@ -1194,11 +1257,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveDeletedLayerAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/saveDeletedLayerAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, deleteLayerRequest);
+                .put(Entity.entity(deleteLayerRequest,
+                                MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -1209,16 +1274,17 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveCheckStatusLayerAndTreeModifications");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("layerID", String.valueOf(layerID));
-        params.add("checked", String.valueOf(checked));
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap();
+        formData.add("layerID", String.valueOf(layerID));
+        formData.add("checked", String.valueOf(checked));
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/saveCheckStatusLayerAndTreeModifications"))
-                .queryParams(params)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class);
+                .put(Entity.form(formData),
+                        Boolean.class);
     }
 
     @Override
@@ -1229,11 +1295,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "saveDragAndDropLayerAndTreeModifications");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/saveDragAndDropLayerAndTreeModifications"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, ddLayerReq);
+                .put(Entity.entity(ddLayerReq, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -1248,9 +1316,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getRasterLayer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getRasterLayer/"))
                 .path(String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPRasterLayer.class);
@@ -1262,9 +1331,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getVectorLayer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getVectorLayer/"))
                 .path(String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPVectorLayer.class);
@@ -1276,9 +1346,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getShortLayer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getShortLayer/"))
                 .path(String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ShortLayerDTO.class);
@@ -1290,9 +1361,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getLayers");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getLayers/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ShortLayerDTOContainer.class);
@@ -1304,9 +1376,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getBBox");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getBBox/"))
                 .path(String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPBBox.class);
@@ -1318,9 +1391,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getLayerInfo");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getLayerInfo/"))
                 .path(String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPLayerInfo.class);
@@ -1332,9 +1406,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getLayerType");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getLayerType/"))
                 .path(String.valueOf(layerID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPLayerType.class);
@@ -1348,9 +1423,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getLayersDataSourceByProjectID");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureLayer/layers/getLayersDataSourceByProjectID/"))
                 .path(String.valueOf(projectID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GetDataSourceResponse.class);
@@ -1362,9 +1438,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAllRoles");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAcl/organizations/getAllRoles/"))
                 .path(organization)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(WSGetRoleResponse.class);
@@ -1377,9 +1454,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAccountPermission");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAcl/organizations/getAccountPermission/"))
                 .path(String.valueOf(accountID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GuiComponentsPermissionMapData.class);
@@ -1392,13 +1470,11 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getRolePermission");
 
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("role", role);
-        params.add("organization", organization);
-
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAcl/organizations/getRolePermission"))
-                .queryParams(params)
+                .queryParam("role", role)
+                .queryParam("organization", organization)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GuiComponentsPermissionMapData.class);
@@ -1411,11 +1487,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateRolePermission");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAcl/organizations/updateRolePermission"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, putRolePermissionReq);
+                .put(Entity.entity(putRolePermissionReq,
+                                MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -1424,11 +1502,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "saveRole");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureAcl/organizations/saveRole"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Boolean.class, saveRoleReq);
+                .post(Entity.entity(saveRoleReq, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -1437,11 +1517,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertServer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/insertServer"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, server);
+                .post(Entity.entity(server, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1450,11 +1532,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "updateServer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/updateServer"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Long.class, server);
+                .put(Entity.entity(server, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1463,9 +1547,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteServer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/deleteServer"))
                 .queryParam("serverID", String.valueOf(serverID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -1478,9 +1563,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getAllServers");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/getAllServers/"))
                 .path(organizazionName)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ServerDTOContainer.class);
@@ -1492,9 +1578,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getServerDetail");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/getServerDetail/"))
                 .path(String.valueOf(serverID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GeoPlatformServer.class);
@@ -1506,9 +1593,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getShortServer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/getShortServer"))
                 .queryParam("serverUrl", serverUrl)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ServerDTO.class);
@@ -1521,9 +1609,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getServerDetailByUrl");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/getServerDetailByUrl"))
                 .queryParam("serverUrl", serverUrl)
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GeoPlatformServer.class);
@@ -1536,11 +1625,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "saveServer");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureServer/servers/saveServer"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(ServerDTO.class, saveServerReq);
+                .put(Entity.entity(saveServerReq, MediaType.APPLICATION_JSON),
+                        ServerDTO.class);
     }
 
     @Override
@@ -1549,11 +1640,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertMessage");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/insertMessage"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Long.class, message);
+                .post(Entity.entity(message, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1562,11 +1655,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "insertMultiMessage");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/insertMultiMessage"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .post(Boolean.class, messageDTO);
+                .post(Entity.entity(messageDTO, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -1575,9 +1670,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "deleteMessage");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/deleteMessage/"))
                 .path(String.valueOf(messageID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .delete(Boolean.class);
@@ -1589,9 +1685,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "getMessageDetail");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/getMessageDetail/"))
                 .path(String.valueOf(messageID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GPMessage.class);
@@ -1605,9 +1702,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getAllMessagesByRecipient");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/getAllMessagesByRecipient/"))
                 .path(String.valueOf(recipientID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GetMessageResponse.class);
@@ -1621,9 +1719,10 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "getUnreadMessagesByRecipient");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/getUnreadMessagesByRecipient/"))
                 .path(String.valueOf(recipientID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(GetMessageResponse.class);
@@ -1635,12 +1734,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
 
         logger.trace(LOGGER_MESSAGE, accessToken, "markMessageAsRead");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/markMessageAsRead/"))
-                .path(String.valueOf(messageID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class);
+                .put(Entity.entity(messageID, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -1651,12 +1751,14 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "markAllMessagesAsReadByRecipient");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/markAllMessagesAsReadByRecipient/"))
-                .path(String.valueOf(recipientID))
+                //                .path(String.valueOf(recipientID))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class);
+                .put(Entity.entity(recipientID, MediaType.APPLICATION_JSON),
+                        Boolean.class);
     }
 
     @Override
@@ -1668,11 +1770,13 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
         logger.trace(LOGGER_MESSAGE, accessToken,
                 "markMessagesAsReadByDate");
 
-        return client.resource(super.getRestServiceURL()
+        return client.target(super.getRestServiceURL()
                 .concat("jsonSecureMessage/messages/markMessagesAsReadByDate"))
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
-                .put(Boolean.class, markMessageAsReadByDateReq);
+                .put(Entity.entity(markMessageAsReadByDateReq,
+                                MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override

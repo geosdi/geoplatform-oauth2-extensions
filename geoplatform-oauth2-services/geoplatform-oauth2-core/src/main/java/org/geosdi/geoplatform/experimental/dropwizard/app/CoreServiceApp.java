@@ -36,12 +36,14 @@
 package org.geosdi.geoplatform.experimental.dropwizard.app;
 
 import io.dropwizard.Application;
-import io.dropwizard.auth.oauth.OAuthProvider;
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.oauth.OAuthFactory;
 import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.Map;
 import javax.ws.rs.Path;
+import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticatedPrincipal;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.exception.OAuth2ExceptionProvider;
 import org.geosdi.geoplatform.experimental.dropwizard.config.CoreServiceConfig;
 import org.geosdi.geoplatform.experimental.dropwizard.config.spring.CoreOAuth2ServiceLoader;
@@ -80,8 +82,11 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
         e.jersey().register(new JacksonMessageBodyProvider(
                 new GPJacksonSupport().getDefaultMapper(), e.getValidator()));
         e.jersey().register(new OAuth2ExceptionProvider());
-        e.jersey().register(new OAuthProvider<>(new CoreOAuthAuthenticator(t),
-                "protected-resources"));
+        e.jersey().register(AuthFactory.binder(new OAuthFactory<>(
+                new CoreOAuthAuthenticator(t), "protected-resources",
+                GPAuthenticatedPrincipal.class)));
+//        e.jersey().register(new OAuthProvider<>(new CoreOAuthAuthenticator(t),
+//                "protected-resources"));
         e.healthChecks().register("service-health-check",
                 new CoreServiceHealthCheck());
 

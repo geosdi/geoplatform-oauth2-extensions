@@ -35,8 +35,8 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core;
 
-import com.sun.jersey.api.client.UniformInterfaceException;
 import java.util.List;
+import javax.ws.rs.WebApplicationException;
 import org.geosdi.geoplatform.core.model.GPAuthority;
 import org.geosdi.geoplatform.core.model.GPOrganization;
 import org.geosdi.geoplatform.core.model.GPUser;
@@ -116,7 +116,7 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
     }
 
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = WebApplicationException.class)
     public void testSecureAllOrganizationAccountsIncorrect() throws Exception {
         String wrongOrganizationName = organizationNameRSTest + "_";
         oauth2CoreClientConnector.getAccounts(wrongOrganizationName);
@@ -159,7 +159,7 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
     }
 
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = WebApplicationException.class)
     public void testInsertUserWithNoRolesRest() throws Exception {
         super.createAndInsertUser("user-no-roles-rest", organizationTest);
 
@@ -222,8 +222,8 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
             oauth2CoreClientConnector.insertAccount(new InsertAccountRequest(
                     user, Boolean.FALSE));
             Assert.fail("User already exist wrt username");
-        } catch (UniformInterfaceException ex) {
-            GPRestExceptionMessage exMess = ex.getResponse().getEntity(
+        } catch (WebApplicationException ex) {
+            GPRestExceptionMessage exMess = ex.getResponse().readEntity(
                     GPRestExceptionMessage.class);
             if (!exMess.getMessage().toLowerCase().contains("username")) { // Must be fail for other reasons
                 Assert.fail("Not fail for User already exist wrt username,"
@@ -242,8 +242,8 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
             oauth2CoreClientConnector.insertAccount(new InsertAccountRequest(
                     user, Boolean.FALSE));
             Assert.fail("User already exist wrt email");
-        } catch (UniformInterfaceException ex) {
-            GPRestExceptionMessage exMess = ex.getResponse().getEntity(
+        } catch (WebApplicationException ex) {
+            GPRestExceptionMessage exMess = ex.getResponse().readEntity(
                     GPRestExceptionMessage.class);
             if (!exMess.getMessage().toLowerCase().contains("email")) { // Must be fail for other reasons
                 Assert.fail("Not fail for User already exist wrt email,"
@@ -263,8 +263,8 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
             oauth2CoreClientConnector.insertAccount(new InsertAccountRequest(
                     user, Boolean.FALSE));
             Assert.fail("User incorrect wrt organization");
-        } catch (UniformInterfaceException ex) {
-            GPRestExceptionMessage exMess = ex.getResponse().getEntity(
+        } catch (WebApplicationException ex) {
+            GPRestExceptionMessage exMess = ex.getResponse().readEntity(
                     GPRestExceptionMessage.class);
             if (!exMess.getMessage().toLowerCase().contains("organization")) { // Must be fail for other reasons
                 Assert.fail("Not fail for User incorrect wrt organization,"
@@ -294,7 +294,7 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
     }
 
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = WebApplicationException.class)
     public void testSecureAuthorizationIncorrectUsername() throws Exception {
         String wrongUsername = usernameTest + "_";
         oauth2CoreClientConnector.getUserDetailByUsernameAndPassword(
@@ -302,7 +302,7 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
     }
 
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = WebApplicationException.class)
     public void testSecureAuthorizationIncorrectEmail() throws Exception {
         String wrongEmail = emailTest + "_";
         oauth2CoreClientConnector.getUserDetailByUsernameAndPassword(wrongEmail,
@@ -310,7 +310,7 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
     }
 
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = WebApplicationException.class)
     public void testSecureAuthorizationIncorrectPassword() throws Exception {
         String wrongPassword = passwordTest + "_";
         oauth2CoreClientConnector.getUserDetailByUsernameAndPassword(
@@ -318,7 +318,7 @@ public class OAuth2AccountTest extends OAuth2CoreServiceTest {
 
     }
 
-    @Test(expected = UniformInterfaceException.class)
+    @Test(expected = WebApplicationException.class)
     public void testSecureLoginFaultUserDisabled() throws Exception {
         // Set disabled user
         userTest.setEnabled(false);

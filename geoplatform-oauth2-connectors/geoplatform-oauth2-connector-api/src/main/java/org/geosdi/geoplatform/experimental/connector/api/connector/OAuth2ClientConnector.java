@@ -35,7 +35,7 @@
  */
 package org.geosdi.geoplatform.experimental.connector.api.connector;
 
-import com.sun.jersey.api.client.Client;
+import javax.ws.rs.client.Client;
 import org.geosdi.geoplatform.experimental.connector.api.settings.BaseConnectorSettings;
 import org.springframework.beans.factory.DisposableBean;
 

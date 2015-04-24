@@ -35,18 +35,9 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core.spring.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.auth.token.BaseTokenBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.settings.OAuth2ClientSettings;
-import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.ACCEPT_SINGLE_VALUE_AS_ARRAY_ENABLE;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.FAIL_ON_IGNORED_PROPERTIES_DISABLE;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.FAIL_ON_NULL_FOR_PRIMITIVES_DISABLE;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.INDENT_OUTPUT_ENABLE;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.UNWRAP_ROOT_VALUE_DISABLE;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.USE_WRAPPER_NAME_AS_PROPERTY_NAME_ENABLE;
-import static org.geosdi.geoplatform.support.jackson.property.GPJacksonSupportEnum.WRAP_ROOT_VALUE_ENABLE;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,18 +53,7 @@ class OAuth2CoreTokenBuilderConfig {
     @Bean(name = "oauth2CoreTokenBuilder")
     public BaseTokenBuilder createTokenBuilder(@Qualifier(
             value = "oauth2CoreSettings") OAuth2ClientSettings oauth2CoreSettings) {
-        return new OAuth2CoreTokenBuilder(oauth2CoreSettings, Client.create(),
-                createMapper());
+        return new OAuth2CoreTokenBuilder(oauth2CoreSettings,
+                ClientBuilder.newClient());
     }
-
-    ObjectMapper createMapper() {
-        return new GPJacksonSupport(UNWRAP_ROOT_VALUE_DISABLE,
-                FAIL_ON_IGNORED_PROPERTIES_DISABLE,
-                FAIL_ON_NULL_FOR_PRIMITIVES_DISABLE,
-                ACCEPT_SINGLE_VALUE_AS_ARRAY_ENABLE,
-                WRAP_ROOT_VALUE_ENABLE,
-                INDENT_OUTPUT_ENABLE,
-                USE_WRAPPER_NAME_AS_PROPERTY_NAME_ENABLE).getDefaultMapper();
-    }
-
 }

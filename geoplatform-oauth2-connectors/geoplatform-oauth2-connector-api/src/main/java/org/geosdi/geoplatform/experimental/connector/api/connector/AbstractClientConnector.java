@@ -36,7 +36,8 @@
 package org.geosdi.geoplatform.experimental.connector.api.connector;
 
 import com.google.common.base.Preconditions;
-import com.sun.jersey.api.client.Client;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.auth.token.OAuth2TokenBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
 import org.slf4j.Logger;
@@ -98,7 +99,7 @@ public abstract class AbstractClientConnector implements OAuth2ClientConnector {
     public final void destroy() throws Exception {
         logger.debug("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Disposing : {}\n",
                 this.getConnectorName());
-        this.client.destroy();
+        this.client.close();
     }
 
     @Override
@@ -108,6 +109,6 @@ public abstract class AbstractClientConnector implements OAuth2ClientConnector {
     }
 
     private static Client defaultClient() {
-        return Client.create();
+        return ClientBuilder.newClient();
     }
 }

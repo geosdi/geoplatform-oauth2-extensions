@@ -35,11 +35,12 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core.spring.connector;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.auth.token.OAuth2TokenBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
 import org.geosdi.geoplatform.experimental.connector.core.spring.connector.provider.CoreConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,17 +52,18 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 class OAuth2CoreClientConnectorConfig {
-
+    
     @Bean(name = "oauth2CoreClientConnector")
     public OAuth2CoreClientConnector createCoreClientConnector(@Qualifier(
             value = "oauth2CoreTokenBuilder") OAuth2TokenBuilder oauth2CoreTokenBuilder,
             @Qualifier(value = "coreClientSettings") ConnectorClientSettings coreClientSettings) {
-
+        
         return new OAuth2CoreClientConnector(coreClientSettings, createClient(),
                 oauth2CoreTokenBuilder);
     }
-
+    
     Client createClient() {
-        return Client.create(new DefaultClientConfig(CoreConnectorProvider.class));
+        return ClientBuilder.newClient(new ClientConfig(
+                CoreConnectorProvider.class));
     }
 }

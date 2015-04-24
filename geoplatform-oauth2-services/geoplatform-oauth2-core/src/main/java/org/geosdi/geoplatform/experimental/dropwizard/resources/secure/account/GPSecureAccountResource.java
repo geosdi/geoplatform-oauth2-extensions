@@ -192,7 +192,7 @@ public class GPSecureAccountResource extends BaseAccountResource {
      * @param userID
      * @param request
      * @return SearchUsersResponseWS
-     * 
+     *
      * @throws Exception
      */
     @Override
@@ -287,8 +287,7 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @Path(value = GPServiceRSPathConfig.FORCE_TEMPORARY_ACCOUNT_PATH)
     @Override
     public void forceTemporaryAccount(@Auth Principal principal,
-            @PathParam(value = "accountID") Long accountID)
-            throws Exception {
+            Long accountID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "
                 + "forceTemporaryAccount - Principal : {}\n\n",
                 principal.getName());
@@ -299,7 +298,7 @@ public class GPSecureAccountResource extends BaseAccountResource {
     @Path(value = GPServiceRSPathConfig.FORCE_EXPIRED_TEMPORARY_ACCOUNT_PATH)
     @Override
     public void forceExpiredTemporaryAccount(@Auth Principal principal,
-            @PathParam(value = "accountID") Long accountID) throws Exception {
+            Long accountID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@@Executing secure "
                 + "forceExpiredTemporaryAccount - Principal : {}\n\n",
                 principal.getName());

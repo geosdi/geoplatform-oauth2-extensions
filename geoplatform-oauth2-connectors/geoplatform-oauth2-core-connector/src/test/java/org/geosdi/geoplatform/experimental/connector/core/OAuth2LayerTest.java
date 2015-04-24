@@ -35,19 +35,17 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core;
 
-import com.sun.jersey.api.client.UniformInterfaceException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.WebApplicationException;
 import org.geosdi.geoplatform.core.model.GPBBox;
 import org.geosdi.geoplatform.core.model.GPLayer;
 import org.geosdi.geoplatform.core.model.GPLayerInfo;
 import org.geosdi.geoplatform.core.model.GPRasterLayer;
 import org.geosdi.geoplatform.core.model.GPVectorLayer;
-import org.geosdi.geoplatform.exception.IllegalParameterFault;
-import org.geosdi.geoplatform.exception.ResourceNotFoundFault;
 import org.geosdi.geoplatform.exception.rs.GPRestExceptionMessage;
 import org.geosdi.geoplatform.gui.shared.GPLayerType;
 import org.geosdi.geoplatform.request.layer.WSAddLayerAndTreeModificationsRequest;
@@ -443,15 +441,15 @@ public class OAuth2LayerTest extends OAuth2CoreServiceTest {
                             projectTest.getId(),
                             rootFolderA.getId(), raster, descendantsMapData));
             Assert.fail("Add layer must fail because title value is null");
-        } catch (UniformInterfaceException ex) {
-            GPRestExceptionMessage exMess = ex.getResponse().getEntity(
+        } catch (WebApplicationException ex) {
+            GPRestExceptionMessage exMess = ex.getResponse().readEntity(
                     GPRestExceptionMessage.class);
             logger.debug("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ {}\n", exMess);
             try {
                 raster1 = oauth2CoreClientConnector.getRasterLayer(idRaster1);
                 Assert.fail("rasterLayer1 must not exist");
-            } catch (UniformInterfaceException rnf) {
-                GPRestExceptionMessage rnfMess = rnf.getResponse().getEntity(
+            } catch (WebApplicationException rnf) {
+                GPRestExceptionMessage rnfMess = rnf.getResponse().readEntity(
                         GPRestExceptionMessage.class);
                 logger.debug("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ {}\n", rnfMess);
             }

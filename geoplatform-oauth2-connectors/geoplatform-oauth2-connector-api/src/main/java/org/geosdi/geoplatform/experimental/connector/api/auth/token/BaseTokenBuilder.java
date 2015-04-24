@@ -35,15 +35,14 @@
  */
 package org.geosdi.geoplatform.experimental.connector.api.auth.token;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import java.io.IOException;
 import java.util.Objects;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import org.apache.commons.codec.binary.Base64;
 import org.geosdi.geoplatform.experimental.connector.api.auth.responce.AccessTokenResponse;
 import org.geosdi.geoplatform.experimental.connector.api.settings.OAuth2ClientSettings;
@@ -63,32 +62,18 @@ public abstract class BaseTokenBuilder implements OAuth2TokenBuilder {
     private final OAuth2ClientSettings clientSettings;
     private final String auth;
     private Client client;
-    private ObjectMapper mapper;
 
     protected BaseTokenBuilder(OAuth2ClientSettings theClientSettings) {
-        this(theClientSettings, defaultClient(), defaultMapper());
+        this(theClientSettings, defaultClient());
     }
 
     protected BaseTokenBuilder(OAuth2ClientSettings theClientSettings,
             Client theClient) {
-        this(theClientSettings, theClient, defaultMapper());
-    }
-
-    protected BaseTokenBuilder(OAuth2ClientSettings theClientSettings,
-            ObjectMapper theMapper) {
-        this(theClientSettings, defaultClient(), theMapper);
-    }
-
-    protected BaseTokenBuilder(OAuth2ClientSettings theClientSettings,
-            Client theClient, ObjectMapper theMapper) {
         Preconditions.checkNotNull(theClient, "The client must not be null.");
-        Preconditions.checkNotNull(theMapper, "The ObjectMapper must "
-                + "not be null.");
         Preconditions.checkNotNull(theClientSettings, "The OAuthClientSettings "
                 + "must not be null.");
 
         this.client = theClient;
-        this.mapper = theMapper;
         this.clientSettings = theClientSettings;
         this.auth = "Basic ".concat(new String(Base64.encodeBase64(
                 clientSettings.getClientId().concat(":")
@@ -97,32 +82,25 @@ public abstract class BaseTokenBuilder implements OAuth2TokenBuilder {
 
     @Override
     public final AccessTokenResponse createToken() throws CreateTokenException {
-        ClientResponse clientResponse = this.client
-                .resource(this.clientSettings.getAccessTokenURL())
+        Response clientResponse = this.client
+                .target(this.clientSettings.getAccessTokenURL())
+                .request()
                 .header(HttpHeaders.AUTHORIZATION, this.auth)
-                .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
-                .post(ClientResponse.class, createFormData());
+                .post(Entity.form(createFormData()), Response.class);
 
-        try {
-            AccessTokenResponse accessTokenResponse = this.mapper
-                    .readValue(clientResponse.getEntityInputStream(),
-                            AccessTokenResponse.class);
-            if (accessTokenResponse == null) {
-                throw new CreateTokenException(
-                        "The AccessTokenResponse is null.");
-            }
-            return accessTokenResponse;
-        } catch (IOException e) {
-            logger.error("Could not parse ClientResponse - " + e.getMessage());
-            throw new CreateTokenException("Could not parse ClientResponse : "
-                    + clientResponse, e);
+        AccessTokenResponse accessTokenResponse = clientResponse.readEntity(
+                AccessTokenResponse.class);
+        if (accessTokenResponse == null) {
+            throw new CreateTokenException(
+                    "The AccessTokenResponse is null.");
         }
+        return accessTokenResponse;
     }
 
     @Override
     public final void destroy() throws Exception {
         logger.debug("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DISPOSING : {}\n", this);
-        this.client.destroy();
+        this.client.close();
     }
 
     @Override
@@ -153,10 +131,6 @@ public abstract class BaseTokenBuilder implements OAuth2TokenBuilder {
     protected abstract MultivaluedMap<String, String> createFormData();
 
     private static Client defaultClient() {
-        return Client.create();
-    }
-
-    private static ObjectMapper defaultMapper() {
-        return new ObjectMapper();
+        return ClientBuilder.newClient();
     }
 }

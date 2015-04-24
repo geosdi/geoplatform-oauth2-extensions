@@ -146,8 +146,8 @@ public class GPSecureProjectResource extends BaseProjectResource {
     @PUT
     @Path(value = GPServiceRSPathConfig.SET_PROJECT_SHARED_PATH)
     @Override
-    public void setProjectShared(@Auth Principal principal,
-            @QueryParam(value = "projectID") Long projectID) throws Exception {
+    public void setProjectShared(@Auth Principal principal, Long projectID)
+            throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure setProjectShared - "
                 + "Principal : {}\n\n", principal.getName());
         super.setProjectShared(projectID);

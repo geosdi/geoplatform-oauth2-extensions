@@ -38,6 +38,7 @@ package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.layer;
 import io.dropwizard.auth.Auth;
 import java.security.Principal;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -161,9 +162,8 @@ public class GPSecureLayerResource extends BaseLayerResource {
     @Path(value = GPServiceRSPathConfig.SAVE_CHECK_STATUS_LAYER_AND_TREE_MODIFICATION_PATH)
     @Override
     public Boolean saveCheckStatusLayerAndTreeModifications(
-            @Auth Principal principal,
-            @QueryParam(value = "layerID") Long layerID,
-            @QueryParam(value = "checked") boolean checked) throws Exception {
+            @Auth Principal principal, @FormParam(value = "layerID") Long layerID,
+            @FormParam(value = "checked") boolean checked) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@@@Executing secure "
                 + "saveCheckStatusLayerAndTreeModifications - Principal "
                 + ": {}\n\n", principal.getName());

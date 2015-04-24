@@ -134,7 +134,7 @@ public class GPSecureMessageResource extends BaseMessageResource {
     @Path(value = GPServiceRSPathConfig.MARK_MESSAGE_AS_READ_PATH)
     @Override
     public Boolean markMessageAsRead(@Auth Principal principal,
-            @PathParam(value = "messageID") Long messageID) throws Exception {
+            Long messageID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure markMessageAsRead - "
                 + "Principal : {}\n\n", principal.getName());
         return super.markMessageAsRead(messageID);
@@ -144,7 +144,7 @@ public class GPSecureMessageResource extends BaseMessageResource {
     @Path(value = GPServiceRSPathConfig.MARK_ALL_MESSAGES_AS_READ_BY_RECIPIENT_PATH)
     @Override
     public Boolean markAllMessagesAsReadByRecipient(@Auth Principal principal,
-            @PathParam(value = "recipientID") Long recipientID) throws Exception {
+            Long recipientID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure"
                 + " markAllMessagesAsReadByRecipient - Principal : {}\n\n",
                 principal.getName());

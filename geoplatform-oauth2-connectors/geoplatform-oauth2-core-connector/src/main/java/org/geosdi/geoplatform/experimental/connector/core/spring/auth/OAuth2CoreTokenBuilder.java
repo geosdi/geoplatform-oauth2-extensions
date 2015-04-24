@@ -35,9 +35,8 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core.spring.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import static org.geosdi.geoplatform.experimental.connector.api.auth.spec.GrantTypeValues.CLIENT_CREDENTIALS;
 import org.geosdi.geoplatform.experimental.connector.api.auth.token.BaseTokenBuilder;
@@ -51,16 +50,15 @@ import org.geosdi.geoplatform.experimental.connector.api.settings.OAuth2ClientSe
 class OAuth2CoreTokenBuilder extends BaseTokenBuilder {
 
     public OAuth2CoreTokenBuilder(OAuth2ClientSettings theClientSettings,
-            Client theClient, ObjectMapper theMapper) {
-        super(theClientSettings, theClient, theMapper);
+            Client theClient) {
+        super(theClientSettings, theClient);
     }
 
     @Override
     protected final MultivaluedMap<String, String> createFormData() {
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap();
         formData.add(CLIENT_CREDENTIALS.getGrantTypeKey(),
                 CLIENT_CREDENTIALS.getGrantTypeValue());
         return formData;
     }
-
 }

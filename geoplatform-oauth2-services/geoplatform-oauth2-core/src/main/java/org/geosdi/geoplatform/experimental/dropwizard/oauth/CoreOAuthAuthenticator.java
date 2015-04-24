@@ -36,7 +36,7 @@
 package org.geosdi.geoplatform.experimental.dropwizard.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.authorize.BaseOAuth2Authenticator;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.OAuth2JacksonProvider;
 import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
@@ -49,7 +49,7 @@ import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
 public class CoreOAuthAuthenticator extends BaseOAuth2Authenticator {
 
     public CoreOAuthAuthenticator(GPServiceConfig conf) {
-        super(conf, Client.create(), createMapper());
+        super(conf, ClientBuilder.newClient(), createMapper());
     }
 
     private static ObjectMapper createMapper() {
