@@ -7,3 +7,4 @@ target/
 .project
 
 /geoplatform-oauth2-core/dependency-reduced-pom.xml
+/geoplatform-oauth2-services/geoplatform-oauth2-core/dependency-reduced-pom.xml
