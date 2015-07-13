@@ -37,6 +37,7 @@ package org.geosdi.geoplatform.experimental.dropwizard.auth.authorize;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import io.dropwizard.auth.AuthenticationException;
 import java.io.IOException;
 import javax.ws.rs.client.Client;
@@ -69,19 +70,9 @@ public abstract class BaseOAuth2Authenticator implements GPOAuth2Authenticator {
 
     protected BaseOAuth2Authenticator(GPServiceConfig conf, Client theClient,
             ObjectMapper theMapper) {
-        if (conf == null) {
-            throw new IllegalArgumentException("The GPServiceConfig must not "
-                    + "be null");
-        }
-
-        if (theClient == null) {
-            throw new IllegalArgumentException("The Client must not be null");
-        }
-
-        if (theMapper == null) {
-            throw new IllegalArgumentException("The ObjectMapper must not"
-                    + " be null");
-        }
+        Preconditions.checkNotNull(conf, "The GPServiceConfig must not be null");
+        Preconditions.checkNotNull(theClient, "The Client must not be null");
+        Preconditions.checkNotNull(theMapper, "The ObjectMapper must not be null");
 
         AuthConfig auth = conf.getAuthConfig();
         authorizationServerUrl = auth.getAuthorizationServerUrl();
@@ -110,4 +101,5 @@ public abstract class BaseOAuth2Authenticator implements GPOAuth2Authenticator {
         }
         return Optional.fromNullable(response.getPrincipal());
     }
+
 }
