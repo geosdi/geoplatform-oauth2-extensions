@@ -1,3 +1,11 @@
+/.idea
+/geoplatform-oauth2-connectors/geoplatform-oauth2-core-connector/geoplatform-oauth2-core-connector.iml
+/geoplatform-oauth2-connectors/geoplatform-oauth2-connectors.iml
+/geoplatform-oauth2-connectors/geoplatform-oauth2-connector-api/geoplatform-oauth2-connector-api.iml
+/geoplatform-oauth2-services/geoplatform-oauth2-core/geoplatform-oauth2-core.iml
+/geoplatform-oauth2-services/geoplatform-oauth2-api/geoplatform-oauth2-api.iml
+/geoplatform-oauth2-extensions.iml
+/geoplatform-oauth2-services/geoplatform-oauth2-services.iml
 # ignore target artifact folders
 target/
 

@@ -41,8 +41,6 @@ import io.dropwizard.auth.oauth.OAuthFactory;
 import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.util.Map;
-import javax.ws.rs.Path;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticatedPrincipal;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.provider.exception.OAuth2ExceptionProvider;
 import org.geosdi.geoplatform.experimental.dropwizard.config.CoreServiceConfig;
@@ -51,6 +49,9 @@ import org.geosdi.geoplatform.experimental.dropwizard.health.CoreServiceHealthCh
 import org.geosdi.geoplatform.experimental.dropwizard.oauth.CoreOAuthAuthenticator;
 import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import javax.ws.rs.Path;
+import java.util.Map;
 
 /**
  * <p>
@@ -73,9 +74,7 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
 
     @Override
     public void run(CoreServiceConfig t, Environment e) throws Exception {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(CoreOAuth2ServiceLoader.class);
-        ctx.refresh();
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(CoreOAuth2ServiceLoader.class);
         ctx.registerShutdownHook();
         ctx.start();
 

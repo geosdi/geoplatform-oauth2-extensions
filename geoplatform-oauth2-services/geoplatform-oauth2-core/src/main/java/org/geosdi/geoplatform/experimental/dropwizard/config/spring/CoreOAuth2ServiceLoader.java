@@ -35,6 +35,7 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.config.spring;
 
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -45,9 +46,10 @@ import org.springframework.context.annotation.ImportResource;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @Configuration
-@ImportResource(value = {"classpath*:applicationContext.xml"})
+@ImportResource(value = {"classpath*:applicationContext.xml"},
+        reader = XmlBeanDefinitionReader.class)
 @ComponentScan(
-            value = {"org.geosdi.geoplatform.experimental.dropwizard.delegate",
-                "org.geosdi.geoplatform.experimental.dropwizard.resources"})
+        value = {"org.geosdi.geoplatform.experimental.dropwizard.delegate",
+            "org.geosdi.geoplatform.experimental.dropwizard.resources"})
 public class CoreOAuth2ServiceLoader {
 }
