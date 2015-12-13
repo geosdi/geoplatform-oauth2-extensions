@@ -36,16 +36,17 @@ server:
 
 auth:
   authorizationServerUrl: http://localhost:8282/gp-authorization-service/v1/tokeninfo
-  secret: c20d6fdd-2945-4365-9285-8529ac27121c
-  key: 6444ff48-999c-474a-96a5-2d5fc4bebcea
+  secret: 2c7904b9-e6f8-47d7-bc6a-bef7bef6029d
+  key: 04d62611-9084-4d1d-90ff-24887df1d592
+
 
 # Logging settings.
 logging:
-  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+#  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
   level: info
-  # Logger-specific levels.
+#  # Logger-specific levels.
   loggers:
       "org.geosdi.geoplatform.dropwizard" : debug
       "org.geosdi.geoplatform.responce.factory" : debug
-      appenders:
-        type: console
+  appenders:
+    - type: console

@@ -36,8 +36,9 @@
 package org.geosdi.geoplatform.experimental.dropwizard.app;
 
 import io.dropwizard.Application;
-import io.dropwizard.auth.AuthFactory;
-import io.dropwizard.auth.oauth.OAuthFactory;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -48,9 +49,11 @@ import org.geosdi.geoplatform.experimental.dropwizard.config.spring.CoreOAuth2Se
 import org.geosdi.geoplatform.experimental.dropwizard.health.CoreServiceHealthCheck;
 import org.geosdi.geoplatform.experimental.dropwizard.oauth.CoreOAuthAuthenticator;
 import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.ws.rs.Path;
+import java.security.Principal;
 import java.util.Map;
 
 /**
@@ -81,11 +84,15 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
         e.jersey().register(new JacksonMessageBodyProvider(
                 new GPJacksonSupport().getDefaultMapper(), e.getValidator()));
         e.jersey().register(new OAuth2ExceptionProvider());
-        e.jersey().register(AuthFactory.binder(new OAuthFactory<>(
-                new CoreOAuthAuthenticator(t), "protected-resources",
-                GPAuthenticatedPrincipal.class)));
-//        e.jersey().register(new OAuthProvider<>(new CoreOAuthAuthenticator(t),
-//                "protected-resources"));
+
+        e.jersey().register(new AuthDynamicFeature(
+                new OAuthCredentialAuthFilter.Builder<GPAuthenticatedPrincipal>()
+                        .setAuthenticator( new CoreOAuthAuthenticator(t))
+                        .setPrefix("Bearer")
+                        .buildAuthFilter()));
+        e.jersey().register(RolesAllowedDynamicFeature.class);
+        e.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
+
         e.healthChecks().register("service-health-check",
                 new CoreServiceHealthCheck());
 

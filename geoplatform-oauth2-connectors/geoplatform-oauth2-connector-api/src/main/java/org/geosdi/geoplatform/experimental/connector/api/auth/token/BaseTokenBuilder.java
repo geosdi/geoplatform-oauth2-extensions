@@ -36,21 +36,21 @@
 package org.geosdi.geoplatform.experimental.connector.api.auth.token;
 
 import com.google.common.base.Preconditions;
-import java.util.Objects;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import org.apache.commons.codec.binary.Base64;
 import org.geosdi.geoplatform.experimental.connector.api.auth.responce.AccessTokenResponse;
 import org.geosdi.geoplatform.experimental.connector.api.settings.OAuth2ClientSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import java.util.Objects;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -77,7 +77,7 @@ public abstract class BaseTokenBuilder implements OAuth2TokenBuilder {
         this.clientSettings = theClientSettings;
         this.auth = "Basic ".concat(new String(Base64.encodeBase64(
                 clientSettings.getClientId().concat(":")
-                .concat(clientSettings.getClientSecret()).getBytes())));
+                        .concat(clientSettings.getClientSecret()).getBytes())));
     }
 
     @Override
@@ -87,7 +87,6 @@ public abstract class BaseTokenBuilder implements OAuth2TokenBuilder {
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, this.auth)
                 .post(Entity.form(createFormData()), Response.class);
-
         AccessTokenResponse accessTokenResponse = clientResponse.readEntity(
                 AccessTokenResponse.class);
         if (accessTokenResponse == null) {

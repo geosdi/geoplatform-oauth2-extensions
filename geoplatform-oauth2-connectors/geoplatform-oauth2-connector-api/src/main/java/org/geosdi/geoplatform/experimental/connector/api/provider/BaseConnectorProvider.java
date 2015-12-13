@@ -38,9 +38,9 @@ package org.geosdi.geoplatform.experimental.connector.api.provider;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import static com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider.BASIC_ANNOTATIONS;
-import javax.ws.rs.ext.Provider;
 import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
+
+import javax.ws.rs.ext.Provider;
 
 /**
  *
@@ -51,7 +51,7 @@ import org.geosdi.geoplatform.support.jackson.GPJacksonSupport;
 public abstract class BaseConnectorProvider extends JacksonJaxbJsonProvider {
 
     protected BaseConnectorProvider() {
-        super(new GPJacksonSupport().getDefaultMapper(), BASIC_ANNOTATIONS);
+        super(new GPJacksonSupport().getDefaultMapper(), DEFAULT_ANNOTATIONS);
     }
 
     public abstract void registerModule(Module module);

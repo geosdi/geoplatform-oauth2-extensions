@@ -35,8 +35,6 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core;
 
-import java.util.HashMap;
-import java.util.List;
 import org.geosdi.geoplatform.gui.shared.GPRole;
 import org.geosdi.geoplatform.initializer.GuiComponentIDs;
 import org.geosdi.geoplatform.request.organization.WSPutRolePermissionRequest;
@@ -44,6 +42,9 @@ import org.geosdi.geoplatform.request.organization.WSSaveRoleRequest;
 import org.geosdi.geoplatform.response.collection.GuiComponentsPermissionMapData;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -75,7 +76,7 @@ public class OAuth2RolePermissionTest extends OAuth2CoreServiceTest {
         logger.trace("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@RETRIEVE GuiComponents for"
                 + " USER_ROLE : {}\n\n", wsUserMapData);
 
-        Assert.assertEquals(50, wsUserMapData.getPermissionMap().size());
+        Assert.assertEquals(51, wsUserMapData.getPermissionMap().size());
 
         GuiComponentsPermissionMapData viewerMapData = new GuiComponentsPermissionMapData();
         viewerMapData.setPermissionMap(new HashMap<String, Boolean>(
@@ -92,7 +93,7 @@ public class OAuth2RolePermissionTest extends OAuth2CoreServiceTest {
         logger.trace("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@RETRIEVE GuiComponents for"
                 + " VIEWER_ROLE : {}\n\n", wsViewerMapData);
 
-        Assert.assertEquals(49, wsViewerMapData.getPermissionMap().size());
+        Assert.assertEquals(50, wsViewerMapData.getPermissionMap().size());
     }
 
     @Test
