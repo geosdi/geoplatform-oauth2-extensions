@@ -39,13 +39,14 @@ import io.dropwizard.auth.Authenticator;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticatedPrincipal;
 
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
 public interface GPOAuth2Authenticator extends
         Authenticator<String, GPAuthenticatedPrincipal> {
 
+    /**
+     * @return {@link String}
+     */
     String getAuthenticatorName();
-
 }

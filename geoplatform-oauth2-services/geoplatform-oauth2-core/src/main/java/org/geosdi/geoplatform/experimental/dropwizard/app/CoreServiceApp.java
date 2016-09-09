@@ -81,13 +81,12 @@ public class CoreServiceApp extends Application<CoreServiceConfig> {
         ctx.registerShutdownHook();
         ctx.start();
 
-        e.jersey().register(new JacksonMessageBodyProvider(
-                new GPJacksonSupport().getDefaultMapper(), e.getValidator()));
+        e.jersey().register(new JacksonMessageBodyProvider(new GPJacksonSupport().getDefaultMapper()));
         e.jersey().register(new OAuth2ExceptionProvider());
 
         e.jersey().register(new AuthDynamicFeature(
                 new OAuthCredentialAuthFilter.Builder<GPAuthenticatedPrincipal>()
-                        .setAuthenticator( new CoreOAuthAuthenticator(t))
+                        .setAuthenticator(new CoreOAuthAuthenticator(t))
                         .setPrefix("Bearer")
                         .buildAuthFilter()));
         e.jersey().register(RolesAllowedDynamicFeature.class);

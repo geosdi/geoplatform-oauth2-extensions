@@ -36,13 +36,8 @@
 package org.geosdi.geoplatform.experimental.dropwizard.auth.authorize;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import io.dropwizard.auth.AuthenticationException;
-import java.io.IOException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import org.apache.commons.codec.binary.Base64;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.model.GPAuthenticatedPrincipal;
 import org.geosdi.geoplatform.experimental.dropwizard.auth.responce.VerifyTokenResponse;
@@ -51,8 +46,13 @@ import org.geosdi.geoplatform.experimental.dropwizard.config.GPServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.util.Optional;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -99,7 +99,7 @@ public abstract class BaseOAuth2Authenticator implements GPOAuth2Authenticator {
             logger.error("Could not parse JSON - " + e.getMessage());
             throw new AuthenticationException("Could not parse JSON: " + json, e);
         }
-        return Optional.fromNullable(response.getPrincipal());
+        return Optional.of(response.getPrincipal());
     }
 
 }
