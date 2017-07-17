@@ -36,24 +36,10 @@
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.project;
 
 import io.dropwizard.auth.Auth;
-import java.security.Principal;
-import java.util.List;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPProject;
-import org.geosdi.geoplatform.request.LikePatternType;
-import org.geosdi.geoplatform.request.PaginatedSearchRequest;
-import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
-import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
-import org.geosdi.geoplatform.request.SearchRequest;
+import org.geosdi.geoplatform.request.*;
+import org.geosdi.geoplatform.request.project.CloneProjectRequest;
 import org.geosdi.geoplatform.request.project.ImportProjectRequest;
 import org.geosdi.geoplatform.request.project.SaveProjectRequest;
 import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
@@ -65,8 +51,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.security.Principal;
+import java.util.List;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -138,7 +128,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
     public Integer getNumberOfElementsProject(@Auth Principal principal,
             @PathParam(value = "projectID") Long projectID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@@Executing secure "
-                + "getNumberOfElementsProject - Principal : {}\n\n",
+                        + "getNumberOfElementsProject - Principal : {}\n\n",
                 principal.getName());
         return super.getNumberOfElementsProject(projectID);
     }
@@ -152,6 +142,23 @@ public class GPSecureProjectResource extends BaseProjectResource {
                 + "Principal : {}\n\n", principal.getName());
         super.setProjectShared(projectID);
     }
+
+    /**
+     * @param principal
+     * @param cloneProjectRequest
+     * @return {@link Long}
+     * @throws Exception
+     */
+    @POST
+    @Path(value = GPServiceRSPathConfig.CLONE_PROJECT_PATH)
+    @Override
+    public Long cloneProject(@Auth Principal principal, CloneProjectRequest cloneProjectRequest)
+            throws Exception {
+        logger.debug("\n\n@@@@@@@@@@@@@@Executing secure cloneProject - "
+                + "Principal : {}\n\n", principal.getName());
+        return super.cloneProject(cloneProjectRequest);
+    }
+
     //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Secure AccountProject">
@@ -207,7 +214,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @Auth Principal principal,
             @PathParam(value = "accountID") Long accountID) {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getAccountProjectsByAccountID - Principal : {}\n\n",
+                        + "getAccountProjectsByAccountID - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountProjectsByAccountID(accountID);
     }
@@ -219,7 +226,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @Auth Principal principal,
             @PathParam(value = "projectID") Long projectID) {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getAccountProjectsByProjectID - Principal : {}\n\n",
+                        + "getAccountProjectsByProjectID - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountProjectsByProjectID(projectID);
     }
@@ -232,7 +239,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @PathParam(value = "accountID") Long accountID,
             @PathParam(value = "projectID") Long projectID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getAccountProjectByAccountAndProjectIDs - Principal : {}\n\n",
+                        + "getAccountProjectByAccountAndProjectIDs - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountProjectByAccountAndProjectIDs(accountID,
                 projectID);
@@ -243,7 +250,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @QueryParam(value = "accountID") Long accountID,
             @QueryParam("request") SearchRequest request) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getAccountProjectsCount - Principal : {}\n\n",
+                        + "getAccountProjectsCount - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountProjectsCount(accountID, request);
     }
@@ -258,8 +265,8 @@ public class GPSecureProjectResource extends BaseProjectResource {
             throws Exception {
         return getAccountProjectsCount(accountID, (nameLike != null)
                 ? (likeType != null)
-                        ? new SearchRequest(nameLike, likeType)
-                        : new SearchRequest(nameLike) : new SearchRequest()
+                ? new SearchRequest(nameLike, likeType)
+                : new SearchRequest(nameLike) : new SearchRequest()
         );
     }
 
@@ -269,7 +276,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
     public GPAccountProject getDefaultAccountProject(@Auth Principal principal,
             @PathParam(value = "accountID") Long accountID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getDefaultAccountProject - Principal : {}\n\n",
+                        + "getDefaultAccountProject - Principal : {}\n\n",
                 principal.getName());
         return super.getDefaultAccountProject(accountID);
     }
@@ -282,7 +289,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @QueryParam("request") PaginatedSearchRequest request)
             throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "searchAccountProjects - Principal : {}\n\n",
+                        + "searchAccountProjects - Principal : {}\n\n",
                 principal.getName());
         return super.searchAccountProjects(accountID, request);
     }
@@ -345,7 +352,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             AccountProjectPropertiesDTO accountProjectProperties)
             throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "saveAccountProjectProperties - Principal : {}\n\n",
+                        + "saveAccountProjectProperties - Principal : {}\n\n",
                 principal.getName());
         return super.saveAccountProjectProperties(accountProjectProperties);
     }
@@ -357,7 +364,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @Auth Principal principal,
             @PathParam(value = "projectID") Long projectID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getAccountsByProjectID - Principal : {}\n\n",
+                        + "getAccountsByProjectID - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountsByProjectID(projectID);
     }
@@ -369,7 +376,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @Auth Principal principal,
             @PathParam(value = "projectID") Long projectID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "getAccountsToShareByProjectID - Principal : {}\n\n",
+                        + "getAccountsToShareByProjectID - Principal : {}\n\n",
                 principal.getName());
         return super.getAccountsToShareByProjectID(projectID);
     }
@@ -380,7 +387,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
     public Boolean updateAccountsProjectSharing(@Auth Principal principal,
             PutAccountsProjectRequest apRequest) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure "
-                + "updateAccountsProjectSharing - Principal : {}\n\n",
+                        + "updateAccountsProjectSharing - Principal : {}\n\n",
                 principal.getName());
         return super.updateAccountsProjectSharing(apRequest);
     }
@@ -397,7 +404,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @PathParam(value = "projectID") Long projectID,
             @PathParam(value = "accountID") Long accountID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure"
-                + " getProjectWithRootFolders - Principal : {}\n\n",
+                        + " getProjectWithRootFolders - Principal : {}\n\n",
                 principal.getName());
         return super.getProjectWithRootFolders(projectID, accountID);
     }
@@ -409,7 +416,7 @@ public class GPSecureProjectResource extends BaseProjectResource {
             @PathParam(value = "projectID") Long projectID,
             @PathParam(value = "accountID") Long accountID) throws Exception {
         logger.debug("\n\n@@@@@@@@@@@@@Executing secure"
-                + " getProjectWithExpandedFolders - Principal : {}\n\n",
+                        + " getProjectWithExpandedFolders - Principal : {}\n\n",
                 principal.getName());
         return super.getProjectWithExpandedFolders(projectID, accountID);
     }

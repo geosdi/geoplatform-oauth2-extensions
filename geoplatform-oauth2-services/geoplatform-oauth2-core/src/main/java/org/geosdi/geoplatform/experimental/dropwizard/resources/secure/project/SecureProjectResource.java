@@ -35,15 +35,10 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.project;
 
-import java.security.Principal;
-import java.util.List;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPProject;
-import org.geosdi.geoplatform.request.LikePatternType;
-import org.geosdi.geoplatform.request.PaginatedSearchRequest;
-import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
-import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
-import org.geosdi.geoplatform.request.SearchRequest;
+import org.geosdi.geoplatform.request.*;
+import org.geosdi.geoplatform.request.project.CloneProjectRequest;
 import org.geosdi.geoplatform.request.project.ImportProjectRequest;
 import org.geosdi.geoplatform.request.project.SaveProjectRequest;
 import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
@@ -54,8 +49,10 @@ import org.geosdi.geoplatform.services.core.api.resources.GPAccountProjectResour
 import org.geosdi.geoplatform.services.core.api.resources.GPFolderProjectResource;
 import org.geosdi.geoplatform.services.core.api.resources.GPProjectResource;
 
+import java.security.Principal;
+import java.util.List;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -82,6 +79,15 @@ public interface SecureProjectResource extends GPProjectResource,
             throws Exception;
 
     void setProjectShared(Principal principal, Long projectID) throws Exception;
+
+    /**
+     * @param principal
+     * @param cloneProjectRequest
+     * @return {@link Long}
+     * @throws Exception
+     */
+    Long cloneProject(Principal principal, CloneProjectRequest cloneProjectRequest) throws Exception;
+
     //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Secure AccountProject">
@@ -111,7 +117,7 @@ public interface SecureProjectResource extends GPProjectResource,
 
     Long getAccountProjectsCount(Principal principal, Long accountID,
             SearchRequest request) throws Exception;
-    
+
     Long getAccountProjectsCount(Principal principal, Long accountID,
             String nameLike, LikePatternType likeType) throws Exception;
 

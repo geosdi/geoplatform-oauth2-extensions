@@ -35,66 +35,27 @@
  */
 package org.geosdi.geoplatform.experimental.connector.core.spring.connector;
 
-import java.util.List;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import org.geosdi.geoplatform.core.model.GPAccountProject;
-import org.geosdi.geoplatform.core.model.GPBBox;
-import org.geosdi.geoplatform.core.model.GPFolder;
-import org.geosdi.geoplatform.core.model.GPLayerInfo;
-import org.geosdi.geoplatform.core.model.GPMessage;
-import org.geosdi.geoplatform.core.model.GPOrganization;
-import org.geosdi.geoplatform.core.model.GPProject;
-import org.geosdi.geoplatform.core.model.GPRasterLayer;
-import org.geosdi.geoplatform.core.model.GPUser;
-import org.geosdi.geoplatform.core.model.GPVectorLayer;
-import org.geosdi.geoplatform.core.model.GPViewport;
-import org.geosdi.geoplatform.core.model.GeoPlatformServer;
+import org.geosdi.geoplatform.core.model.*;
 import org.geosdi.geoplatform.experimental.connector.api.auth.token.OAuth2TokenBuilder;
 import org.geosdi.geoplatform.experimental.connector.api.connector.AbstractClientConnector;
 import org.geosdi.geoplatform.experimental.connector.api.settings.ConnectorClientSettings;
 import org.geosdi.geoplatform.gui.shared.GPLayerType;
-import org.geosdi.geoplatform.request.InsertAccountRequest;
-import org.geosdi.geoplatform.request.LikePatternType;
-import org.geosdi.geoplatform.request.PaginatedSearchRequest;
-import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
-import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
-import org.geosdi.geoplatform.request.SearchRequest;
+import org.geosdi.geoplatform.request.*;
 import org.geosdi.geoplatform.request.folder.InsertFolderRequest;
 import org.geosdi.geoplatform.request.folder.WSAddFolderAndTreeModificationsRequest;
 import org.geosdi.geoplatform.request.folder.WSDDFolderAndTreeModifications;
 import org.geosdi.geoplatform.request.folder.WSDeleteFolderAndTreeModifications;
-import org.geosdi.geoplatform.request.layer.InsertLayerRequest;
-import org.geosdi.geoplatform.request.layer.WSAddLayerAndTreeModificationsRequest;
-import org.geosdi.geoplatform.request.layer.WSAddLayersAndTreeModificationsRequest;
-import org.geosdi.geoplatform.request.layer.WSDDLayerAndTreeModificationsRequest;
-import org.geosdi.geoplatform.request.layer.WSDeleteLayerAndTreeModificationsRequest;
+import org.geosdi.geoplatform.request.layer.*;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
 import org.geosdi.geoplatform.request.organization.WSPutRolePermissionRequest;
 import org.geosdi.geoplatform.request.organization.WSSaveRoleRequest;
+import org.geosdi.geoplatform.request.project.CloneProjectRequest;
 import org.geosdi.geoplatform.request.project.ImportProjectRequest;
 import org.geosdi.geoplatform.request.project.SaveProjectRequest;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.request.viewport.InsertViewportRequest;
 import org.geosdi.geoplatform.request.viewport.ManageViewportRequest;
-import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
-import org.geosdi.geoplatform.response.FolderDTO;
-import org.geosdi.geoplatform.response.GetDataSourceResponse;
-import org.geosdi.geoplatform.response.MessageDTO;
-import org.geosdi.geoplatform.response.ProjectDTO;
-import org.geosdi.geoplatform.response.RasterPropertiesDTO;
-import org.geosdi.geoplatform.response.SearchUsersResponseWS;
-import org.geosdi.geoplatform.response.ServerDTO;
-import org.geosdi.geoplatform.response.ServerDTOContainer;
-import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
-import org.geosdi.geoplatform.response.ShortLayerDTO;
-import org.geosdi.geoplatform.response.ShortLayerDTOContainer;
-import org.geosdi.geoplatform.response.UserDTO;
-import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
+import org.geosdi.geoplatform.response.*;
 import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.response.collection.ChildrenFolderStore;
@@ -106,8 +67,15 @@ import org.geosdi.geoplatform.response.role.WSGetRoleResponse;
 import org.geosdi.geoplatform.response.viewport.WSGetViewportResponse;
 import org.geosdi.geoplatform.services.core.api.GPCoreServiceApi;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -165,7 +133,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .post(Entity.entity(insertAccountRequest,
-                                MediaType.APPLICATION_JSON), Long.class);
+                        MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -225,8 +193,8 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                         + "getUserDetailByUsername"))
                 .queryParam("nameLike", request.getNameLike())
                 .queryParam("likeType", (request.getLikeType() != null)
-                                ? request.getLikeType()
-                                : LikePatternType.CONTAINS)
+                        ? request.getLikeType()
+                        : LikePatternType.CONTAINS)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
@@ -278,8 +246,8 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .concat("jsonSecureAccount/accounts/getShortUserByUsername"))
                 .queryParam("nameLike", request.getNameLike())
                 .queryParam("likeType", (request.getLikeType() != null)
-                                ? request.getLikeType()
-                                : LikePatternType.CONTAINS)
+                        ? request.getLikeType()
+                        : LikePatternType.CONTAINS)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
@@ -346,8 +314,8 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .concat("jsonSecureAccount/accounts/getAccountsCount"))
                 .queryParam("nameLike", request.getNameLike())
                 .queryParam("likeType", (request.getLikeType() != null)
-                                ? request.getLikeType()
-                                : LikePatternType.CONTAINS)
+                        ? request.getLikeType()
+                        : LikePatternType.CONTAINS)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
@@ -548,8 +516,8 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .queryParam("accountID", String.valueOf(accountID))
                 .queryParam("nameLike", request.getNameLike())
                 .queryParam("likeType", (request.getLikeType() != null)
-                                ? request.getNameLike()
-                                : LikePatternType.CONTAINS)
+                        ? request.getNameLike()
+                        : LikePatternType.CONTAINS)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
@@ -649,7 +617,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(accountProjectProperties,
-                                MediaType.APPLICATION_JSON), Boolean.class);
+                        MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -715,7 +683,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .post(Entity.entity(saveProjectRequest,
-                                MediaType.APPLICATION_JSON), Long.class);
+                        MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -853,7 +821,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .post(Entity.entity(insertViewportReq,
-                                MediaType.APPLICATION_JSON), Long.class);
+                        MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -944,7 +912,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .post(Entity.entity(insertFolderRequest,
-                                MediaType.APPLICATION_JSON), Long.class);
+                        MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -998,7 +966,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(sftModificationRequest,
-                                MediaType.APPLICATION_JSON), Long.class);
+                        MediaType.APPLICATION_JSON), Long.class);
     }
 
     @Override
@@ -1016,7 +984,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(sdfModificationRequest,
-                                MediaType.APPLICATION_JSON), Boolean.class);
+                        MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -1034,7 +1002,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(sddfTreeModificationRequest,
-                                MediaType.APPLICATION_JSON), Boolean.class);
+                        MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -1145,6 +1113,26 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .get(ProjectDTO.class);
+    }
+
+    /**
+     * @param cloneProjectRequest
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Long cloneProject(CloneProjectRequest cloneProjectRequest) throws Exception {
+        String accessToken = super.createToken();
+
+        logger.trace(LOGGER_MESSAGE, accessToken, "cloneProject");
+
+        return client.target(super.getRestServiceURL()
+                .concat("jsonSecureProject/projects/cloneProject"))
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "bearer ".concat(accessToken))
+                .post(Entity.entity(cloneProjectRequest, MediaType.APPLICATION_JSON),
+                        Long.class);
     }
 
     @Override
@@ -1263,7 +1251,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(deleteLayerRequest,
-                                MediaType.APPLICATION_JSON), Boolean.class);
+                        MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -1493,7 +1481,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(putRolePermissionReq,
-                                MediaType.APPLICATION_JSON), Boolean.class);
+                        MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override
@@ -1776,7 +1764,7 @@ public class OAuth2CoreClientConnector extends AbstractClientConnector
                 .header(HttpHeaders.AUTHORIZATION,
                         "bearer ".concat(accessToken))
                 .put(Entity.entity(markMessageAsReadByDateReq,
-                                MediaType.APPLICATION_JSON), Boolean.class);
+                        MediaType.APPLICATION_JSON), Boolean.class);
     }
 
     @Override

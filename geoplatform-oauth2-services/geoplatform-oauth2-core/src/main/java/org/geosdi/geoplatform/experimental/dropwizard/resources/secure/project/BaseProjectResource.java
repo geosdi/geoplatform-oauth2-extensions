@@ -35,8 +35,6 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.resources.secure.project;
 
-import java.util.List;
-import javax.annotation.Resource;
 import org.geosdi.geoplatform.core.model.GPAccountProject;
 import org.geosdi.geoplatform.core.model.GPProject;
 import org.geosdi.geoplatform.experimental.dropwizard.delegate.SecureCoreDelegate;
@@ -44,6 +42,7 @@ import org.geosdi.geoplatform.request.PaginatedSearchRequest;
 import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
 import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
 import org.geosdi.geoplatform.request.SearchRequest;
+import org.geosdi.geoplatform.request.project.CloneProjectRequest;
 import org.geosdi.geoplatform.request.project.ImportProjectRequest;
 import org.geosdi.geoplatform.request.project.SaveProjectRequest;
 import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
@@ -51,8 +50,10 @@ import org.geosdi.geoplatform.response.ProjectDTO;
 import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
 import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -100,6 +101,17 @@ abstract class BaseProjectResource implements SecureProjectResource {
     public void setProjectShared(Long projectID) throws Exception {
         this.gpSecureCoreDelegate.setProjectShared(projectID);
     }
+
+    /**
+     * @param cloneProjectRequest
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Long cloneProject(CloneProjectRequest cloneProjectRequest) throws Exception {
+        return this.gpSecureCoreDelegate.cloneProject(cloneProjectRequest);
+    }
+
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="AccountProject">
@@ -223,7 +235,7 @@ abstract class BaseProjectResource implements SecureProjectResource {
             throws Exception {
         return this.gpSecureCoreDelegate.updateAccountsProjectSharing(apRequest);
     }
-     //</editor-fold>
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Folder / Project">
     // =========================================================================
@@ -253,5 +265,5 @@ abstract class BaseProjectResource implements SecureProjectResource {
             throws Exception {
         return this.gpSecureCoreDelegate.importProject(impRequest);
     }
-     //</editor-fold>
+    //</editor-fold>
 }

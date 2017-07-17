@@ -35,7 +35,6 @@
  */
 package org.geosdi.geoplatform.experimental.dropwizard.delegate;
 
-import java.util.List;
 import org.geosdi.geoplatform.core.delegate.api.account.AccountDelegate;
 import org.geosdi.geoplatform.core.delegate.api.acl.AclDelegate;
 import org.geosdi.geoplatform.core.delegate.api.folder.FolderDelegate;
@@ -45,58 +44,27 @@ import org.geosdi.geoplatform.core.delegate.api.organization.OrganizationDelegat
 import org.geosdi.geoplatform.core.delegate.api.project.ProjectDelegate;
 import org.geosdi.geoplatform.core.delegate.api.server.ServerDelegate;
 import org.geosdi.geoplatform.core.delegate.api.viewport.ViewportDelegate;
-import org.geosdi.geoplatform.core.model.GPAccountProject;
-import org.geosdi.geoplatform.core.model.GPBBox;
-import org.geosdi.geoplatform.core.model.GPFolder;
-import org.geosdi.geoplatform.core.model.GPLayerInfo;
-import org.geosdi.geoplatform.core.model.GPMessage;
-import org.geosdi.geoplatform.core.model.GPOrganization;
-import org.geosdi.geoplatform.core.model.GPProject;
-import org.geosdi.geoplatform.core.model.GPRasterLayer;
-import org.geosdi.geoplatform.core.model.GPUser;
-import org.geosdi.geoplatform.core.model.GPVectorLayer;
-import org.geosdi.geoplatform.core.model.GPViewport;
-import org.geosdi.geoplatform.core.model.GeoPlatformServer;
+import org.geosdi.geoplatform.core.model.*;
 import org.geosdi.geoplatform.exception.AccountLoginFault;
 import org.geosdi.geoplatform.exception.IllegalParameterFault;
 import org.geosdi.geoplatform.exception.ResourceNotFoundFault;
 import org.geosdi.geoplatform.gui.shared.GPLayerType;
-import org.geosdi.geoplatform.request.InsertAccountRequest;
-import org.geosdi.geoplatform.request.PaginatedSearchRequest;
-import org.geosdi.geoplatform.request.PutAccountsProjectRequest;
-import org.geosdi.geoplatform.request.RequestByAccountProjectIDs;
-import org.geosdi.geoplatform.request.SearchRequest;
+import org.geosdi.geoplatform.request.*;
 import org.geosdi.geoplatform.request.folder.InsertFolderRequest;
 import org.geosdi.geoplatform.request.folder.WSAddFolderAndTreeModificationsRequest;
 import org.geosdi.geoplatform.request.folder.WSDDFolderAndTreeModifications;
 import org.geosdi.geoplatform.request.folder.WSDeleteFolderAndTreeModifications;
-import org.geosdi.geoplatform.request.layer.InsertLayerRequest;
-import org.geosdi.geoplatform.request.layer.WSAddLayerAndTreeModificationsRequest;
-import org.geosdi.geoplatform.request.layer.WSAddLayersAndTreeModificationsRequest;
-import org.geosdi.geoplatform.request.layer.WSDDLayerAndTreeModificationsRequest;
-import org.geosdi.geoplatform.request.layer.WSDeleteLayerAndTreeModificationsRequest;
+import org.geosdi.geoplatform.request.layer.*;
 import org.geosdi.geoplatform.request.message.MarkMessageReadByDateRequest;
 import org.geosdi.geoplatform.request.organization.WSPutRolePermissionRequest;
 import org.geosdi.geoplatform.request.organization.WSSaveRoleRequest;
+import org.geosdi.geoplatform.request.project.CloneProjectRequest;
 import org.geosdi.geoplatform.request.project.ImportProjectRequest;
 import org.geosdi.geoplatform.request.project.SaveProjectRequest;
 import org.geosdi.geoplatform.request.server.WSSaveServerRequest;
 import org.geosdi.geoplatform.request.viewport.InsertViewportRequest;
 import org.geosdi.geoplatform.request.viewport.ManageViewportRequest;
-import org.geosdi.geoplatform.response.AccountProjectPropertiesDTO;
-import org.geosdi.geoplatform.response.FolderDTO;
-import org.geosdi.geoplatform.response.GetDataSourceResponse;
-import org.geosdi.geoplatform.response.MessageDTO;
-import org.geosdi.geoplatform.response.ProjectDTO;
-import org.geosdi.geoplatform.response.RasterPropertiesDTO;
-import org.geosdi.geoplatform.response.SearchUsersResponseWS;
-import org.geosdi.geoplatform.response.ServerDTO;
-import org.geosdi.geoplatform.response.ServerDTOContainer;
-import org.geosdi.geoplatform.response.ShortAccountDTOContainer;
-import org.geosdi.geoplatform.response.ShortLayerDTO;
-import org.geosdi.geoplatform.response.ShortLayerDTOContainer;
-import org.geosdi.geoplatform.response.UserDTO;
-import org.geosdi.geoplatform.response.WSGetAccountProjectsResponse;
+import org.geosdi.geoplatform.response.*;
 import org.geosdi.geoplatform.response.authority.GetAuthoritiesResponseWS;
 import org.geosdi.geoplatform.response.authority.GetAuthorityResponse;
 import org.geosdi.geoplatform.response.collection.ChildrenFolderStore;
@@ -110,8 +78,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
- *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
@@ -429,6 +398,12 @@ public class GPSecureCoreDelegate implements SecureCoreDelegate {
     public void setProjectShared(Long projectID) throws ResourceNotFoundFault {
         gpProjectDelegate.setProjectShared(projectID);
     }
+
+    @Override
+    public Long cloneProject(CloneProjectRequest cloneProjectRequest) throws Exception {
+        return this.gpProjectDelegate.cloneProject(cloneProjectRequest);
+    }
+
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Viewport">
